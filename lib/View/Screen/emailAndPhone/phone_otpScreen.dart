@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:investor_flutter/View/Screen/emailAndPhone/login_accountScreen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
+import '../../../Theme/theme_manager.dart';
 
 class PhoneOtpScreen extends StatefulWidget {
   @override
@@ -18,13 +21,16 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: const Size(428, 926));
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w),
           child: Column(
             children: [
+              SizedBox(height: 20.h,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -41,12 +47,12 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                 style: TextStyle(
                   fontSize: 28.sp,
                   fontWeight: FontWeight.w700,
-                  color: Palette.baseElementDark,
+                  color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 ),
               ),
               SizedBox(height: 50.h,),
               Text("OTP",style: TextStyle(
-                color: Palette.baseElementDark,
+                color: isDarkMode ? Palette.hintText : Palette.baseElementDark,
                 fontSize: 17.sp,
                 fontWeight: FontWeight.w400,
               ),),
@@ -62,11 +68,10 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                       width: 56.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Palette.blueSides,
-                          ),
-                          color: Palette.textFieldBlue // light orange color
-
+                        border: Border.all(
+                          color: isDarkMode? Palette.hintText : Palette.blueSides,
+                        ),
+                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
                       ),
                       child: TextFormField(
 
@@ -88,8 +93,7 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  Palette.blue,width: 1),
-                          ),
+                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue, width: 1),                          ),
                         ),// optional styling for the text inside
                       ),
                     ),
@@ -98,11 +102,10 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                       width: 56.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Palette.blueSides,
-                          ),
-                          color: Palette.textFieldBlue  // light orange color
-
+                        border: Border.all(
+                          color: isDarkMode? Palette.hintText : Palette.blueSides,
+                        ),
+                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
                       ),
                       child: TextFormField(
 
@@ -124,8 +127,7 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  Palette.blue,width: 1),
-                          ),
+                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue, width: 1),                          ),
                         ),// optional styling for the text inside
                       ),
                     ),
@@ -134,11 +136,10 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                       width: 56.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Palette.blueSides,
-                          ),
-                          color: Palette.textFieldBlue // light orange color
-
+                        border: Border.all(
+                          color: isDarkMode? Palette.hintText : Palette.blueSides,
+                        ),
+                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
                       ),
                       child: TextFormField(
 
@@ -160,8 +161,7 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  Palette.blue,width: 1),
-                          ),
+                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue, width: 1),                          ),
                         ),// optional styling for the text inside
                       ),
                     ),
@@ -170,11 +170,10 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                       width: 56.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Palette.blueSides,
-                          ),
-                          color: Palette.textFieldBlue // light orange color
-
+                        border: Border.all(
+                          color: isDarkMode? Palette.hintText : Palette.blueSides,
+                        ),
+                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
                       ),
                       child: TextFormField(
 
@@ -196,8 +195,7 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  Palette.blue,width: 1),
-                          ),
+                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue, width: 1),                          ),
                         ),// optional styling for the text inside
                       ),
                     ),
@@ -211,6 +209,7 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                 height: 56.h,
                 child: ElevatedButton(
                   onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginToAccountScreen()));
                     // Handle send OTP button press here
                   },
                   child: Text(

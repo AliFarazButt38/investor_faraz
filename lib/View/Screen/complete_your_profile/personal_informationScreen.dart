@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/View/Screen/complete_your_profile/fund_accountScreen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
+import '../../../Theme/theme_manager.dart';
 class EmploymentStatus {
   final String title;
   bool isSelected;
@@ -40,9 +42,12 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   int selectedStatusIndex = -1;
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+
+      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(child:
       SingleChildScrollView(
         child: Padding(
@@ -50,14 +55,29 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h)),
+              SizedBox(height: 20.h,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Image.asset("assets/icons/back.png",height: 34.h,width: 34.w,),
+                  ),
+                  Padding(
+                    padding:  EdgeInsets.only(right: 170.w),
+                    child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h),
+                  ),
+                ],
+              ),
               SizedBox(height: 20.h,),
               Text(
                 "Personal Information",
                 style: TextStyle(
                   fontSize: 30.sp,
                   fontWeight: FontWeight.w700,
-                  color: Palette.baseElementDark,
+                  color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 ),
               ),
               SizedBox(height: 20.h,),
@@ -74,20 +94,20 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                     decoration: InputDecoration(
                       labelText: "Date of birth",
                       labelStyle: TextStyle(
-                        color: Palette.baseElementDark,
+                        color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                         fontSize: 17.sp,
                         fontWeight: FontWeight.w400,
                       ),
                       hintText: "09/07/1995",
                       hintStyle: TextStyle(
-                        color: Palette.baseGrey,
+                        color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                         fontSize: 17.sp,
                         fontWeight: FontWeight.w400,
 
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color:Palette.blueSides,
+                          color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                         ),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -106,7 +126,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       filled: true,
-                      fillColor:Palette.textFieldBlue,
+                      fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                     ),
                     validator: (text) {
                       if(text!.isEmpty){
@@ -131,19 +151,19 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                         decoration: InputDecoration(
                           labelText: "Social number",
                           labelStyle: TextStyle(
-                            color: Palette.baseElementDark,
+                            color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                             fontWeight: FontWeight.w400,
                             fontSize: 17.sp,
                           ),
                           hintText: "Social security number",
                           hintStyle: TextStyle(
-                            color: Palette.baseGrey,
+                            color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                             fontWeight: FontWeight.w400,
                             fontSize: 17.sp,
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color:  Palette.blueSides, // Change border color if passwords don't match
+                              color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -162,7 +182,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           filled: true,
-                          fillColor: Palette.textFieldBlue,
+                          fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         ),
                         validator: (text) {
                           if(text!.isEmpty){
@@ -184,7 +204,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                           child: ImageIcon(
                             AssetImage("assets/icons/hide.png"),
                             size: 24.sp,
-                            color: isSocialNumberVisible ? Palette.blue : Palette.baseGrey,
+                            color: isSocialNumberVisible ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.baseGrey),
                           ),
                         ),
                       ),
@@ -206,19 +226,19 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                         decoration: InputDecoration(
                           labelText: "Enter address",
                           labelStyle: TextStyle(
-                            color: Palette.baseElementDark,
+                            color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                             fontWeight: FontWeight.w400,
                             fontSize: 17.sp,
                           ),
                           hintText: "Your permanent address",
                           hintStyle: TextStyle(
-                            color: Palette.baseGrey,
+                            color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                             fontWeight: FontWeight.w400,
                             fontSize: 17.sp,
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color:  Palette.blueSides, // Change border color if passwords don't match
+                              color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -237,7 +257,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           filled: true,
-                          fillColor: Palette.textFieldBlue,
+                          fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         ),
                         validator: (text) {
                           if(text!.isEmpty){
@@ -259,7 +279,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                           child: ImageIcon(
                             AssetImage("assets/icons/hide.png"),
                             size: 24.sp,
-                            color: isEnterAddressVisible? Palette.blue : Palette.baseGrey,
+                            color: isEnterAddressVisible ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.baseGrey),
                           ),
                         ),
                       ),
@@ -274,7 +294,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 style: TextStyle(
                   fontSize: 30.sp,
                   fontWeight: FontWeight.w700,
-                  color: Palette.baseElementDark,
+                  color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 ),
               ),
               SizedBox(height: 10.h,),
@@ -300,12 +320,12 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                       height: 60.h,
                       width: 368.w,
                       decoration: BoxDecoration(
-                        color: Palette.textFieldBlue,
+                        color:isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         border: Border.all(
-                          color: status.isSelected ? Palette.blue : Palette.blueSides,
+                          color: status.isSelected ? Palette.blue : (isDarkMode ? Palette.hintText: Palette.blueSides),
                           width: 1.0,
                         ),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(25),
                       ),
                       margin: EdgeInsets.only(right: 10.w,top: 10.h,bottom: 10.h,left: 10.w),
                       padding: EdgeInsets.all(10.0),
@@ -315,7 +335,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                           Text(
                             status.title,
                             style: TextStyle(
-                              color: status.isSelected ? Palette.blue : Palette.baseElementDark,
+                              color: status.isSelected ? Palette.blue : (isDarkMode? Palette.darkWhite : Palette.baseElementDark),
                               fontSize: 18.sp,
                               fontWeight: status.isSelected ?FontWeight.w700 : FontWeight.w400,
                             ),

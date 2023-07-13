@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/Theme/Palette/palette.dart';
+import 'package:provider/provider.dart';
+
+import '../../../Theme/theme_manager.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({Key? key}) : super(key: key);
@@ -19,36 +22,53 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(
         child: Padding(
           padding:  EdgeInsets.only(left: 15.w,right: 15.w),
           child: SingleChildScrollView(
             child: Column(
               children: [
+                SizedBox(height: 20.h,),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    isDarkMode? GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child:Image.asset("assets/icons/darkBack.png",height: 46.h,width: 46.w,),
+                    ):
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child:Image.asset("assets/icons/goBack.png",height: 46.h,width: 46.w,),
+                    ),
+                    SizedBox(width: 20.w,),
                     Text("Personal Profile",style: TextStyle(
-                      color: Palette.baseElementDark,
+                      color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                       fontSize: 28.sp,
                       fontWeight: FontWeight.w700,
                     ),),
+                    Spacer(),
                     SvgPicture.asset("assets/icons/editBlue.svg",height: 46.h,width: 46.w,),
                   ],
                 ),
                 SizedBox(height: 10.h,),
                 Divider(
-                  color: Color(0xffDEDEDE),
+                  color:isDarkMode? Color(0xff404550): Color(0xffDEDEDE),
                   thickness: 1,
                 ),
                 SizedBox(height: 10.h,),
                 SvgPicture.asset("assets/icons/camera.svg",height: 150.h,width: 150.w,),
                 SizedBox(height: 10.h,),
                 Divider(
-                  color: Color(0xffDEDEDE),
+                  color:isDarkMode? Color(0xff404550): Color(0xffDEDEDE),
                   thickness: 1,
                 ),
                 SizedBox(height: 10.h,),
@@ -58,7 +78,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                           Text("Full Name",style: TextStyle(
-                            color: Palette.baseElementDark,
+                            color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w400,
                           ),),
@@ -78,14 +98,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             ),
 
                             hintStyle: TextStyle(
-                              color: Palette.baseGrey,
+                              color:isDarkMode ? Palette.hintText : Palette.baseGrey,
                               fontSize: 17.sp,
                               fontWeight: FontWeight.w400,
 
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color:Palette.blueSides,
+                                color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                               ),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -104,7 +124,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             ),
 
                             filled: true,
-                            fillColor:Palette.textFieldBlue,
+                            fillColor:isDarkMode ? Palette.filledTextField : Palette.textFieldBlue,
                           ),
                           validator: (text) {
                             if(text!.isEmpty){
@@ -116,8 +136,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                         SizedBox(height: 15.h,),
                         Text("Email",style: TextStyle(
-                          color: Palette.baseElementDark,
-                          fontSize: 18.sp,
+                          color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,                          fontSize: 18.sp,
                           fontWeight: FontWeight.w400,
                         ),),
                         SizedBox(height: 5.h,),
@@ -135,14 +154,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             ),
                             hintText: "example@gmail.com",
                             hintStyle: TextStyle(
-                              color: Palette.baseGrey,
+                              color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                               fontSize: 17.sp,
                               fontWeight: FontWeight.w400,
 
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color:Palette.blueSides,
+                                color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                               ),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -161,7 +180,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             filled: true,
-                            fillColor:Palette.textFieldBlue,
+                            fillColor:isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue,
                           ),
                           validator: (text) {
                             if(text!.isEmpty){
@@ -173,8 +192,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                         SizedBox(height: 15.h,),
                         Text("Employer Name",style: TextStyle(
-                          color: Palette.baseElementDark,
-                          fontSize: 18.sp,
+                          color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,                          fontSize: 18.sp,
                           fontWeight: FontWeight.w400,
                         ),),
                         SizedBox(height: 5.h,),
@@ -193,14 +211,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             ),
                             hintText: "John Wick",
                             hintStyle: TextStyle(
-                              color: Palette.baseGrey,
+                              color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                               fontSize: 17.sp,
                               fontWeight: FontWeight.w400,
 
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color:Palette.blueSides,
+                                color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                               ),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -219,7 +237,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             filled: true,
-                            fillColor:Palette.textFieldBlue,
+                            fillColor:isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue,
                           ),
                           validator: (text) {
                             if(text!.isEmpty){
@@ -231,8 +249,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                         SizedBox(height: 15.h,),
                         Text("Job Title",style: TextStyle(
-                          color: Palette.baseElementDark,
-                          fontSize: 18.sp,
+                          color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,                          fontSize: 18.sp,
                           fontWeight: FontWeight.w400,
                         ),),
                         SizedBox(height: 5.h,),
@@ -250,14 +267,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             ),
                             hintText: "Manager",
                             hintStyle: TextStyle(
-                              color: Palette.baseGrey,
+                              color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                               fontSize: 17.sp,
                               fontWeight: FontWeight.w400,
 
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color:Palette.blueSides,
+                                color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                               ),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -276,7 +293,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             filled: true,
-                            fillColor:Palette.textFieldBlue,
+                            fillColor:isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue,
                           ),
                           validator: (text) {
                             if(text!.isEmpty){
@@ -288,8 +305,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                         SizedBox(height: 15.h,),
                         Text("Occupation Industry",style: TextStyle(
-                          color: Palette.baseElementDark,
-                          fontSize: 18.sp,
+                          color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,                          fontSize: 18.sp,
                           fontWeight: FontWeight.w400,
                         ),),
                         SizedBox(height: 5.h,),
@@ -307,14 +323,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             ),
                             hintText: "Industry Name",
                             hintStyle: TextStyle(
-                              color: Palette.baseGrey,
+                              color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                               fontSize: 17.sp,
                               fontWeight: FontWeight.w400,
 
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color:Palette.blueSides,
+                                color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                               ),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -333,7 +349,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             filled: true,
-                            fillColor:Palette.textFieldBlue,
+                            fillColor:isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue,
                           ),
                           validator: (text) {
                             if(text!.isEmpty){
@@ -345,6 +361,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                       ],
                     )),
+                SizedBox(height: 30.h,),
               ],
             ),
           ),

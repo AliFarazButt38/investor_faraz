@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
+import '../../../Theme/theme_manager.dart';
 class ContainerData {
   final String image;
   final String text;
@@ -14,19 +16,19 @@ class ContainerData {
 
 List<ContainerData> containerDataList = [
   ContainerData(
-    image:'assets/icons/hancock.svg',
+    image:'assets/icons/hancock.png',
     text: 'Hancock Property',
     amount: "-\$1,000",
     time: "3 Dec, 2022",
   ),
   ContainerData(
-    image:'assets/icons/hancock.svg',
+    image:'assets/icons/hancock.png',
     text: 'Hancock Property',
     amount: "-\$1,000",
     time: "3 Dec, 2022",
   ),
   ContainerData(
-    image:'assets/icons/hancock.svg',
+    image:'assets/icons/hancock.png',
     text: 'Hancock Property',
     amount: "+\$1,000",
     time: "3 Dec, 2022",
@@ -43,9 +45,11 @@ class TransactionScreen2 extends StatefulWidget {
 class _TransactionScreen2State extends State<TransactionScreen2> {
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+        backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(child:
       Padding(
         padding:  EdgeInsets.only(left: 15.w,right: 15.w),
@@ -53,23 +57,40 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 20.h,),
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  isDarkMode? GestureDetector(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child:Image.asset("assets/icons/darkBack.png",height: 46.h,width: 46.w,),
+                  ):
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child:Image.asset("assets/icons/goBack.png",height: 46.h,width: 46.w,),
+                  ),
+                  SizedBox(width: 20.w,),
                   Text("Bank Account Info",style: TextStyle(
-                    color: Palette.baseElementDark,
+                    color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                     fontSize: 28.sp,
                     fontWeight: FontWeight.w700,
                   ),),
+                  Spacer(),
+                  Image.asset("assets/icons/plus.png",height: 46.h,width: 46.w,),
                 ],
               ),
               SizedBox(height: 10.h,),
               Divider(
-                color: Color(0xffDEDEDE),
+                color:isDarkMode? Color(0xff404550): Color(0xffDEDEDE),
                 thickness: 1,
               ),
               SizedBox(height: 10.h,),
               Text("Bank Account One",style: TextStyle(
-                color: Palette.baseElementDark,
+                color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
               ),),
@@ -87,12 +108,13 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Account holder name",style: TextStyle(
-                              color: Palette.baseElementDark,
+                              color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                             ),),
@@ -103,17 +125,17 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                             ),),
                           ],
                         ),
-                        SizedBox(height: 10.h,),
+
                         Divider(
-                          color: Color(0xffAFE0FF),
+                          color: isDarkMode? Color(0xff404550):  Color(0xffAFE0FF),
                           thickness: 1,
                         ),
-                        SizedBox(height: 10.h,),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Account number",style: TextStyle(
-                              color: Palette.baseElementDark,
+                              color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                             ),),
@@ -124,17 +146,17 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                             ),),
                           ],
                         ),
-                        SizedBox(height: 10.h,),
+
                         Divider(
-                          color: Color(0xffAFE0FF),
+                          color: isDarkMode? Color(0xff404550):  Color(0xffAFE0FF),
                           thickness: 1,
                         ),
-                        SizedBox(height: 10.h,),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Available balance",style: TextStyle(
-                              color: Palette.baseElementDark,
+                              color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                             ),),
@@ -154,7 +176,7 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
               SizedBox(height: 10.h,),
               SizedBox(height: 10.h,),
               Text("Bank Account Two",style: TextStyle(
-                color: Palette.baseElementDark,
+                color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
               ),),
@@ -172,12 +194,13 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Account holder name",style: TextStyle(
-                              color: Palette.baseElementDark,
+                              color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                             ),),
@@ -188,17 +211,17 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                             ),),
                           ],
                         ),
-                        SizedBox(height: 10.h,),
+
                         Divider(
-                          color: Color(0xffAFE0FF),
+                          color: isDarkMode? Color(0xff404550):  Color(0xffAFE0FF),
                           thickness: 1,
                         ),
-                        SizedBox(height: 10.h,),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Account number",style: TextStyle(
-                              color: Palette.baseElementDark,
+                              color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                             ),),
@@ -209,17 +232,17 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                             ),),
                           ],
                         ),
-                        SizedBox(height: 10.h,),
+
                         Divider(
-                          color: Color(0xffAFE0FF),
+                          color: isDarkMode? Color(0xff404550):  Color(0xffAFE0FF),
                           thickness: 1,
                         ),
-                        SizedBox(height: 10.h,),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Available balance",style: TextStyle(
-                              color: Palette.baseElementDark,
+                              color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                             ),),
@@ -238,7 +261,7 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
               ),
               SizedBox(height: 10.h,),
               Divider(
-                color: Color(0xffDEDEDE),
+                color: isDarkMode? Color(0xff404550):Color(0xffDEDEDE),
                 thickness: 1,
               ),
               SizedBox(height: 10.h,),
@@ -246,7 +269,7 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Recent Transactions",style: TextStyle(
-                    color: Palette.baseElementDark,
+                    color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
                   ),),
@@ -263,8 +286,8 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                   height: 252.h,
                   width: 380.w,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Palette.lightBlue,
+                    borderRadius: BorderRadius.circular(10),
+                    color:isDarkMode ? Palette.container : Palette.lightBlue,
                   ),
                   child: ListView.builder(
                     physics: BouncingScrollPhysics(),
@@ -285,14 +308,14 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                         height: 80.h,
                         width: 90.w,
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+
                               children: [
                                 Padding(
                                   padding:  EdgeInsets.all(8.0),
-                                  child: SvgPicture.asset(
+                                  child: Image.asset(
                                     containerDataList[index].image,
                                     height: 56.h,
                                     width: 56.w,
@@ -304,17 +327,19 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
 
                                             containerDataList[index].text,
-                                            style: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w700,color: Palette.baseElementDark),
+                                            style: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w700,
+                                                color: isDarkMode ? Palette.darkWhite :  Palette.baseElementDark
+                                            ),
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                           ),
-                                          SizedBox(width: 100.w,),
+                                          SizedBox(width: 70.w,),
                                           Text(
-
                                             containerDataList[index].amount,style: TextStyle(fontSize: 16.sp,color: amountColor,fontWeight: FontWeight.w700),
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
@@ -324,7 +349,9 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                                       SizedBox(height: 10.h,),
                                       Text(
                                           containerDataList[index].time,
-                                          style: TextStyle(color: Palette.baseGrey,fontSize: 15.sp)),
+                                          style: TextStyle(
+                                              color:isDarkMode ? Palette.hintText : Palette.baseGrey,
+                                              fontSize: 15.sp)),
 
                                     ],
                                   ),
@@ -334,7 +361,9 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                             ),
                             Padding(
                               padding:  EdgeInsets.only(left: 20.w,right: 20.w),
-                              child: Divider(thickness: 1,height: 1.h,color: Color(0xffAFE0FF),),
+                              child: Divider(thickness: 1,height: 1.h,
+                                color:isDarkMode? Color(0xff404550): Color(0xffAFE0FF),
+                              ),
                             ),
                           ],
                         ),
@@ -343,6 +372,7 @@ class _TransactionScreen2State extends State<TransactionScreen2> {
                   ),
                 ),
               ),
+              SizedBox(height: 30.h,),
             ],
           ),
         ),

@@ -4,8 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:investor_flutter/View/Screen/emailAndPhone/choose_password_screen.dart';
 import 'package:investor_flutter/View/Screen/emailAndPhone/phone_otpScreen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
+import '../../../Theme/theme_manager.dart';
 
 class EmailAddressScreen extends StatefulWidget {
   @override
@@ -24,18 +26,25 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w),
           child: Column(
             children: [
+              SizedBox(height: 20.h,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset("assets/icons/cross.png", height: 28.h, width: 28.w),
+                  GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child: Image.asset("assets/icons/cross.png", height: 28.h, width: 28.w)),
                   Padding(
                     padding:  EdgeInsets.only(right: 170.w),
                     child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h),
@@ -49,7 +58,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                 style: TextStyle(
                   fontSize: 28.sp,
                   fontWeight: FontWeight.w700,
-                  color: Palette.baseElementDark,
+                  color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 ),
               ),
               SizedBox(height: 30.h),
@@ -69,11 +78,12 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
 
                         Row(
                           children: [
-                            SvgPicture.asset("assets/icons/email.svg", color: isEmailSelected ? Palette.blue: Palette.baseElementDark ,),
+                            SvgPicture.asset("assets/icons/email.svg", color: isDarkMode ? (isEmailSelected ? Palette.blue : Colors.white) : (isEmailSelected ? Palette.blue : Palette.baseElementDark),
+                            ),
                             Text(
                               "Email",
                               style: TextStyle(
-                                color: isEmailSelected ? Palette.blue: Palette.baseElementDark,
+                                color: isDarkMode ? (isEmailSelected ? Palette.blue : Colors.white) : (isEmailSelected ? Palette.blue : Palette.baseElementDark),
                               ),
                             ),
                           ],
@@ -104,12 +114,13 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                         Row(
 
                           children: [
-                            SvgPicture.asset("assets/icons/phone.svg", color: isPhoneSelected ? Palette.blue: Palette.baseElementDark ,),
+                            SvgPicture.asset("assets/icons/phone.svg",  color: isDarkMode ? (isPhoneSelected ? Palette.blue : Colors.white) : (isPhoneSelected ? Palette.blue : Palette.baseElementDark),
+                            ),
 
                             Text(
                               "Phone",
                               style: TextStyle(
-                                color: isPhoneSelected ? Palette.blue : Palette.baseElementDark,
+                                color: isDarkMode ? (isPhoneSelected  ? Palette.blue : Colors.white) : (isPhoneSelected ? Palette.blue : Palette.baseElementDark),
                               ),
                             ),
                           ],
@@ -149,31 +160,31 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                             decoration: InputDecoration(
                               labelText: "Email Address",
                               labelStyle: TextStyle(
-                                color: Palette.baseElementDark,
+                                color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.w400,
                               ),
                               hintText: "example@gmail.com",
                               hintStyle: TextStyle(
-                                color: Palette.baseGrey,
+                                color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.w400,
 
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: isEmailValid ? Palette.blue : Palette.blueSides,
+                                  color: isEmailValid ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.blueSides),
                                 ),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: isEmailValid ? Palette.blue : Palette.blueSides,
+                                  color: isEmailValid ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.blueSides),
                                 ),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               filled: true,
-                              fillColor:Palette.textFieldBlue,
+                              fillColor: isDarkMode ? Palette.filledTextField : Palette.textFieldBlue,
                             ),
                           ),
                           if (isEmailValid)
@@ -206,9 +217,9 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                           style: TextStyle(color: Palette.baseWhite,fontSize: 18.sp,fontWeight: FontWeight.w700),
                         ),
                         style: ElevatedButton.styleFrom(
-                          primary: Palette.blue,
+                          primary:  Palette.blue,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
+                            borderRadius: BorderRadius.circular(25.0),
                           ),
                         ),
                       ),
@@ -219,16 +230,16 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                       height: 56.h,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle sign in button press here
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>ChoosePasswordScreen()));
                         },
                         child: Text(
                           "Sign In",
                           style: TextStyle(color: Palette.blue),
                         ),
                         style: ElevatedButton.styleFrom(
-                         primary: Color(0xffF8F8F8),
+                         primary: isDarkMode ? Palette.darkBackground : Color(0xffF8F8F8),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
+                            borderRadius: BorderRadius.circular(25.0),
                             side: BorderSide(color: Palette.blue),
                           ),
                         ),
@@ -244,10 +255,10 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                       height: 80.h,
                       width: 368.w,
                       decoration: BoxDecoration(
-                        color: Palette.textFieldBlue,
+                        color: isDarkMode ? Palette.filledTextField: Palette.textFieldBlue,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: Palette.blueSides,
+                          color: isDarkMode ? Palette.hintText : Palette.blueSides,
                         )
                       ),
 
@@ -270,7 +281,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
 
                           inputDecoration: InputDecoration(
                             filled: true,
-                            fillColor: Palette.textFieldBlue,
+                            fillColor:isDarkMode ?  Palette.filledTextField: Palette.textFieldBlue,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide:BorderSide.none,
@@ -306,7 +317,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                         style: ElevatedButton.styleFrom(
                           primary:Palette.blue,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
+                            borderRadius: BorderRadius.circular(25.0),
                           ),
                         ),
                       ),
@@ -324,9 +335,9 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                           style: TextStyle(color: Palette.blue),
                         ),
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xffF8F8F8),
+                          primary: isDarkMode ? Palette.darkBackground : Color(0xffF8F8F8),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
+                            borderRadius: BorderRadius.circular(25.0),
                             side: BorderSide(color: Palette.blue),
                           ),
                         ),

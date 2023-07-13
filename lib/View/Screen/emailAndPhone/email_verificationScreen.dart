@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:investor_flutter/View/Screen/bottom_navigation/bottom_navigation.dart';
+import 'package:investor_flutter/View/Screen/complete_your_profile/complete_profileScreen.dart';
+import 'package:investor_flutter/View/Screen/emailAndPhone/email_verifiedScreen.dart';
+import 'package:investor_flutter/View/Screen/emailAndPhone/login_accountScreen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
+import '../../../Theme/theme_manager.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   @override
@@ -17,18 +23,25 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   int otp4=0;
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w),
           child: Column(
             children: [
+              SizedBox(height: 20.h,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset("assets/icons/cross.png", height: 28.h, width: 28.w),
+                  GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child: Image.asset("assets/icons/cross.png", height: 28.h, width: 28.w)),
                   Padding(
                     padding:  EdgeInsets.only(right: 170.w),
                     child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h),
@@ -41,12 +54,12 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             style: TextStyle(
               fontSize: 28.sp,
               fontWeight: FontWeight.w700,
-              color: Palette.baseElementDark,
+              color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
             ),
           ),
               SizedBox(height: 50.h,),
               Text("Enter code",style: TextStyle(
-                color: Palette.baseElementDark,
+                color: isDarkMode ? Palette.hintText : Palette.baseElementDark,
                 fontSize: 17.sp,
                 fontWeight: FontWeight.w400,
               ),),
@@ -62,9 +75,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: Palette.blueSides,
+                          color: isDarkMode? Palette.hintText : Palette.blueSides,
                         ),
-                        color: Palette.textFieldBlue, // light orange color
+                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
                       ),
                       child: TextFormField(
 
@@ -86,8 +99,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  Palette.blue,width: 1),
-                          ),
+                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue, width: 1),                          ),
                         ),// optional styling for the text inside
                       ),
                     ),
@@ -96,11 +108,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       width: 56.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Palette.blueSides,
-                          ),
-                          color: Palette.textFieldBlue  // light orange color
-
+                        border: Border.all(
+                          color: isDarkMode? Palette.hintText : Palette.blueSides,
+                        ),
+                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
                       ),
                       child: TextFormField(
 
@@ -122,8 +133,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  Palette.blue,width: 1),
-                          ),
+                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue,
+
+                                width: 1),                          ),
                         ),// optional styling for the text inside
                       ),
                     ),
@@ -133,10 +145,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: Palette.blueSides,
+                          color: isDarkMode? Palette.hintText : Palette.blueSides,
                         ),
-                        color: Palette.textFieldBlue, // light orange color
-
+                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
                       ),
                       child: TextFormField(
 
@@ -158,8 +169,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  Palette.blue,width: 1),
-                          ),
+                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue,
+                                width: 1),                          ),
                         ),// optional styling for the text inside
                       ),
                     ),
@@ -168,11 +179,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       width: 56.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Palette.blueSides,
-                          ),
-                          color: Palette.textFieldBlue  // light orange color
-
+                        border: Border.all(
+                          color: isDarkMode? Palette.hintText : Palette.blueSides,
+                        ),
+                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
                       ),
                       child: TextFormField(
 
@@ -194,7 +204,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  Palette.blue,width: 1),
+                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue,
+
+                                width: 1),
                           ),
                         ),// optional styling for the text inside
                       ),
@@ -209,20 +221,25 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 height: 56.h,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle send OTP button press here
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => EmailVerifiedScreen()));
+
+                    Future.delayed(Duration(seconds: 3), () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CompleteYourProfile()));
+                    });
                   },
                   child: Text(
                     "Submit",
                     style: TextStyle(color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary:Palette.blue,
+                    primary: Palette.blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                   ),
                 ),
               ),
+
             ],
           ),
         ),

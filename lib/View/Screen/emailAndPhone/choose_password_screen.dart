@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/View/Screen/emailAndPhone/email_verificationScreen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
+import '../../../Theme/theme_manager.dart';
 
 class ChoosePasswordScreen extends StatefulWidget {
   @override
@@ -42,21 +44,28 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w),
           child: Column(
+
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
+              SizedBox(height: 20.h,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset("assets/icons/cross.png", height: 28.h, width: 28.w),
+                  GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child: Image.asset("assets/icons/cross.png", height: 28.h, width: 28.w)),
                   Padding(
                     padding: EdgeInsets.only(right: 170.w),
                     child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h),
@@ -72,7 +81,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                   style: TextStyle(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.w700,
-                    color: Palette.baseElementDark,
+                    color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                   ),
                 ),
               ),
@@ -95,19 +104,19 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                       decoration: InputDecoration(
                         labelText: "Password",
                         labelStyle: TextStyle(
-                          color: Palette.baseElementDark,
+                          color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                           fontWeight: FontWeight.w400,
                           fontSize: 17.sp,
                         ),
                         hintText: "At least 6 characters",
                         hintStyle: TextStyle(
-                          color: Palette.baseGrey,
+                          color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                           fontWeight: FontWeight.w400,
                           fontSize: 17.sp,
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color:  Palette.blueSides, // Change border color if passwords don't match
+                            color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                           ),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
@@ -118,7 +127,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         filled: true,
-                        fillColor: Palette.textFieldBlue,
+                        fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                       ),
                     ),
                       Positioned(
@@ -133,7 +142,8 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                           child: ImageIcon(
                             AssetImage("assets/icons/hide.png"),
                             size: 24.sp,
-                            color: isPasswordVisible? Palette.blue : Palette.baseGrey,
+                            color: isPasswordVisible ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.baseGrey),
+
                           ),
                         ),
                       ),
@@ -161,7 +171,13 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                         decoration: InputDecoration(
                           labelText: "Confirm Password",
                           labelStyle: TextStyle(
-                            color: Palette.baseElementDark,
+                            color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 17.sp,
+                          ),
+                          hintText: "At least 6 characters",
+                          hintStyle: TextStyle(
+                            color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                             fontWeight: FontWeight.w400,
                             fontSize: 17.sp,
                           ),
@@ -178,7 +194,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           filled: true,
-                          fillColor: Palette.textFieldBlue,
+                          fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         ),
                       ),
                       Positioned(
@@ -193,7 +209,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                           child: ImageIcon(
                             AssetImage("assets/icons/hide.png"),
                             size: 24.sp,
-                            color: isConfirmPasswordVisible? Palette.blue : Palette.baseGrey,
+                            color: isConfirmPasswordVisible? Palette.blue : (isDarkMode ? Palette.hintText : Palette.baseGrey),
                           ),
                         ),
                       ),
@@ -206,7 +222,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 8.0.h,left: 10.w),
                   child: Text(
-                    "The password does not match! Try again ",
+                    "This password seems don't match! Try again.",
                     style: TextStyle(
                       color: Palette.red,
                       fontSize: 16.sp,
@@ -248,7 +264,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                       style: TextStyle(color: Palette.blue),
                     ),
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xffF8F8F8),
+                      primary: isDarkMode ? Palette.darkBackground : Color(0xffF8F8F8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         side: BorderSide(color: Palette.blue),

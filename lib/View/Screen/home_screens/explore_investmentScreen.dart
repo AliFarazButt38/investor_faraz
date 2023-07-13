@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:investor_flutter/View/Screen/home_screens/property_infoScreen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
+import '../../../Theme/theme_manager.dart';
 
 class ExploreInvestmentScreen extends StatefulWidget {
   const ExploreInvestmentScreen({Key? key}) : super(key: key);
@@ -16,9 +18,11 @@ class _ExploreInvestmentScreenState extends State<ExploreInvestmentScreen> {
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(left: 15.w,right: 15.w),
@@ -27,32 +31,67 @@ class _ExploreInvestmentScreenState extends State<ExploreInvestmentScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 20.h,),
                 Row(
                   children: [
-                    Text("Explore Investment",style: TextStyle(color: Palette.baseElementDark,fontSize: 28.sp,fontWeight: FontWeight.w700),)
+                    isDarkMode? GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child:Image.asset("assets/icons/darkBack.png",height: 46.h,width: 46.w,),
+                    ):
+                   GestureDetector(
+                       onTap: (){
+                         Navigator.pop(context);
+                       },
+                       child:Image.asset("assets/icons/goBack.png",height: 46.h,width: 46.w,),
+                   ),
+                    SizedBox(width: 20.w,),
+                    Text("Explore Investment",style: TextStyle(
+                        color:isDarkMode? Palette.darkWhite: Palette.baseElementDark,
+                        fontSize: 28.sp,fontWeight: FontWeight.w700),)
                   ],
                 ),
                 SizedBox(height: 10.h,),
                 Divider(
-                  color: Color(0xffDEDEDE),
+                  color:isDarkMode? Color(0xff404550): Color(0xffDEDEDE),
                   thickness: 1,
                 ),
                 SizedBox(height: 10.h,),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                   Text("Categories",style: TextStyle(
-                     fontWeight: FontWeight.w700,
-                     fontSize: 18.sp,
-                     color: Palette.baseElementDark,
-                   ),),
-                    Text("More",style: TextStyle(
-                      color: Palette.blue,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                    ),),
+                    isDarkMode ?   Image.asset(
+                      "assets/icons/darkCategories.png",
+                      height: 24.h,
+                      width: 24.w,
+                    ):
+                    Image.asset(
+                      "assets/icons/categories.png",
+                      height: 24.h,
+                      width: 24.w,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "Categories",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                        color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
+                      ),
+                    ),
+                    Spacer(),
+                    Text(
+                      "More",
+                      style: TextStyle(
+                        color: Palette.blue,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ],
                 ),
+
                 SizedBox(height: 20.h,),
                 SizedBox(
                   height: 44.h, // Set the desired height
@@ -72,16 +111,17 @@ class _ExploreInvestmentScreenState extends State<ExploreInvestmentScreen> {
                           width: index == 0 ? 161.w : index == 1 ? 103.w : 199.w,
                           height: 44.h,
                           decoration: BoxDecoration(
-                            color: isSelected ? Palette.lightBlue: Color(0xffF4F4F4),
+                            color: isSelected ? (isDarkMode ? Colors.black : Palette.lightBlue) : (isDarkMode  ? Colors.black : Color(0xffF4F4F4)),
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(
-                              color: isSelected ? Palette.blue : Color(0xffDEDEDE),                          ),
+                      color: isSelected ? (isDarkMode ?  Palette.blue : Palette.blue) : (isDarkMode ?Color(0xff404550): Color(0xffDEDEDE)),
+                          ),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             index == 0 ? "All Properties" : index == 1 ? "Urban" : "Sage Neighborhood",
                             style: TextStyle(
-                              color: isSelected ? Palette.blue : Palette.baseGrey,
+                              color: isSelected ? (isDarkMode? Palette.blue : Palette.blue) : (isDarkMode ? Palette.hintText: Palette.baseGrey),
                               fontWeight:  isSelected ? FontWeight.w700 : FontWeight.w400,
                               fontSize: 16.sp,
                             ),
@@ -92,13 +132,13 @@ class _ExploreInvestmentScreenState extends State<ExploreInvestmentScreen> {
                   ),
                 ),
                 SizedBox(height: 10.h,),
-                SvgPicture.asset("assets/images/Rectangle 1567 (1).svg"),
+                Image.asset("assets/images/newEurope.png"),
                 SizedBox(height: 10.h,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Regional Bundle",style: TextStyle(
-                      color: Palette.baseGrey,
+                      color:isDarkMode ? Palette.hintText : Palette.baseGrey,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w400,
                     ),),
@@ -106,8 +146,8 @@ class _ExploreInvestmentScreenState extends State<ExploreInvestmentScreen> {
                       height: 34.h,
                       width: 100.w,
                       decoration: BoxDecoration(
-                        color: Palette.lightBlue,
-                        borderRadius: BorderRadius.circular(10),
+                        color:isDarkMode ? Palette.container: Palette.lightBlue,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       alignment: Alignment.center,
                     child: Row(
@@ -125,15 +165,15 @@ class _ExploreInvestmentScreenState extends State<ExploreInvestmentScreen> {
                   ],
                 ),
                 SizedBox(height: 10.h,),
-                Text("Europe",style: TextStyle(color: Palette.baseElementDark,fontSize: 24.sp,fontWeight: FontWeight.w700),),
+                Text("Europe",style: TextStyle(color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,fontSize: 24.sp,fontWeight: FontWeight.w700),),
                 SizedBox(height: 10.h,),
                 Text("investments across all currently available and\nfuture property bundles in Europe.",style: TextStyle(
-                  color: Palette.baseGrey,
+                  color:isDarkMode ? Palette.hintText : Palette.baseGrey,
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
                 ),),
                 SizedBox(height: 10.h,),
-                Text("Investments start from 3,879 USD",style: TextStyle(color: Palette.baseElementDark,fontSize: 20.sp,fontWeight: FontWeight.w700),),
+                Text("Investments start from 3,879 USD",style: TextStyle(color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,fontSize: 20.sp,fontWeight: FontWeight.w700),),
                 SizedBox(height: 15.h,),
                 Center(
                   child: SizedBox(
@@ -153,26 +193,27 @@ class _ExploreInvestmentScreenState extends State<ExploreInvestmentScreen> {
                               fontSize: 18.sp,
                             ),
                           ),
-                      Icon(Icons.arrow_forward,size: 20,)
+                    SizedBox(width: 10.w,),
+                    Image.asset("assets/icons/investNext.png",height: 20.h,width: 20.w,),
                         ],
                       ),
                       style: ElevatedButton.styleFrom(
                         primary:Palette.blue,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
+                          borderRadius: BorderRadius.circular(25.0),
                         ),
                       ),
                     ),
                   ),
                 ),
                 SizedBox(height: 20.h,),
-                SvgPicture.asset("assets/images/Greece.svg"),
+               Image.asset("assets/images/newgreece.png"),
                 SizedBox(height: 10.h,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Agency Bundle",style: TextStyle(
-                      color: Palette.baseGrey,
+                      color:isDarkMode ? Palette.hintText : Palette.baseGrey,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w400,
                     ),),
@@ -180,8 +221,8 @@ class _ExploreInvestmentScreenState extends State<ExploreInvestmentScreen> {
                       height: 34.h,
                       width: 100.w,
                       decoration: BoxDecoration(
-                        color: Palette.lightBlue,
-                        borderRadius: BorderRadius.circular(10),
+                        color:isDarkMode ? Palette.container: Palette.lightBlue,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       alignment: Alignment.center,
                       child: Row(
@@ -199,15 +240,15 @@ class _ExploreInvestmentScreenState extends State<ExploreInvestmentScreen> {
                   ],
                 ),
                 SizedBox(height: 10.h,),
-                Text("Greece",style: TextStyle(color: Palette.baseElementDark,fontSize: 24.sp,fontWeight: FontWeight.w700),),
+                Text("Greece",style: TextStyle(color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,fontSize: 24.sp,fontWeight: FontWeight.w700),),
                 SizedBox(height: 10.h,),
                 Text("investments across all currently available and\nfuture property bundles in Europe.",style: TextStyle(
-                  color: Palette.baseGrey,
+                  color:isDarkMode ? Palette.hintText : Palette.baseGrey,
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
                 ),),
                 SizedBox(height: 10.h,),
-                Text("Investments start from 1,000 USD",style: TextStyle(color: Palette.baseElementDark,fontSize: 20.sp,fontWeight: FontWeight.w700),),
+                Text("Investments start from 1,000 USD",style: TextStyle(color:isDarkMode? Palette.darkWhite : Palette.baseElementDark,fontSize: 20.sp,fontWeight: FontWeight.w700),),
                 SizedBox(height: 15.h,),
                 Center(
                   child: SizedBox(
@@ -227,13 +268,14 @@ class _ExploreInvestmentScreenState extends State<ExploreInvestmentScreen> {
                               fontSize: 18.sp,
                             ),
                           ),
-                          Icon(Icons.arrow_forward,size: 20,)
+                          SizedBox(width: 10.w,),
+                          Image.asset("assets/icons/investNext.png",height: 20.h,width: 20.w,),
                         ],
                       ),
                       style: ElevatedButton.styleFrom(
                         primary:Palette.blue,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
+                          borderRadius: BorderRadius.circular(25.0),
                         ),
                       ),
                     ),

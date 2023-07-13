@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/View/Screen/complete_your_profile/upload_documentsScreen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
+import '../../../Theme/theme_manager.dart';
 class EmploymentStatus {
   final String title;
   bool isSelected;
@@ -21,11 +23,11 @@ class StatementCheckScreen extends StatefulWidget {
 
 class _StatementCheckScreenState extends State<StatementCheckScreen> {
   List<EmploymentStatus> employmentStatusList = [
-    EmploymentStatus(title: 'The net worth of each owner is 1M+(excluding primary residence)'),
-    EmploymentStatus(title: 'The individual income of each owner was 200k+ for each of the past two'),
-    EmploymentStatus(title: 'Are you or anyone in your household associated with a FINRA Member?'),
+    EmploymentStatus(title: 'The net worth of each owner is \$1M+\n(excluding primary residence)'),
+    EmploymentStatus(title: 'The individual income of each owner\nwas \$200k+ for each of the past two'),
+    EmploymentStatus(title: 'Are you or anyone in your household\nassociated with a FINRA Member?'),
     EmploymentStatus(title: 'The entity has total assets exceeding'),
-    EmploymentStatus(title: 'For each owner, their joint income including their spouse was 300k'),
+    EmploymentStatus(title: 'For each owner, their joint income\nincluding their spouse was \$300k'),
   ];
 
   int selectedStatusIndex = -1;
@@ -33,9 +35,11 @@ class _StatementCheckScreenState extends State<StatementCheckScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(child:
       Padding(
         padding:  EdgeInsets.only(left: 20.w,right: 20.w,),
@@ -43,14 +47,27 @@ class _StatementCheckScreenState extends State<StatementCheckScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
-            Center(child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h)),
-            SizedBox(height: 20.h,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                  child: Image.asset("assets/icons/back.png",height: 34.h,width: 34.w,),
+                ),
+                Padding(
+                  padding:  EdgeInsets.only(right: 170.w),
+                  child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h),
+                ),
+              ],
+            ),            SizedBox(height: 20.h,),
             Text(
               "Do any of these\nstatements apply to you?",
               style: TextStyle(
                 fontSize: 30.sp,
                 fontWeight: FontWeight.w700,
-                color: Palette.baseElementDark,
+                color:isDarkMode? Palette.darkWhite : Palette.baseElementDark,
               ),
             ),
             SizedBox(height: 20.h,),
@@ -82,15 +99,15 @@ class _StatementCheckScreenState extends State<StatementCheckScreen> {
                     },
                     child: Container(
                       width: 368.w,
-                      height: 74.h,
+                      height: 80.h,
 
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: status.isSelected ? Palette.blue : Palette.blueSides,
+                          color: status.isSelected ? Palette.blue : (isDarkMode ? Palette.hintText: Palette.blueSides),
                           width: 2.0,
                         ),
-                        color: Palette.textFieldBlue,
+                        color:isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                       ),
                       margin: EdgeInsets.all(10.0),
                       padding: EdgeInsets.all(10.0),
@@ -102,10 +119,10 @@ class _StatementCheckScreenState extends State<StatementCheckScreen> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: status.isSelected ? Palette.blue : Palette.baseElementDark,
+                                color: status.isSelected ? Palette.blue : (isDarkMode ? Palette.darkWhite : Palette.baseElementDark),
                                 width: 1.0,
                               ),
-                             
+
                               color:  Colors.transparent,
                             ),
                             child: status.isSelected
@@ -117,13 +134,11 @@ class _StatementCheckScreenState extends State<StatementCheckScreen> {
                                 : null,
                           ),
                           SizedBox(width: 10.0),
-                          Expanded(
-                            child: Text(
-                              status.title,
-                              style: TextStyle(
-                                color: status.isSelected ? Palette.blue : Palette.baseElementDark,
-                                fontSize: 17.sp,
-                              ),
+                          Text(
+                            status.title,
+                            style: TextStyle(
+                              color: status.isSelected ? Palette.blue : (isDarkMode? Palette.darkWhite : Palette.baseElementDark),
+                              fontSize: 17.sp,
                             ),
                           ),
                         ],

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/View/Screen/complete_your_profile/employement_InfoScreen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
+import '../../../Theme/theme_manager.dart';
 import 'enterprise_infoScreen.dart';
 class EmploymentStatus {
   final String title;
@@ -21,30 +23,47 @@ class AccountTypeScreen extends StatefulWidget {
 
 class _AccountTypeScreenState extends State<AccountTypeScreen> {
   List<EmploymentStatus> employmentStatusList = [
-    EmploymentStatus(title: 'individual'),
+    EmploymentStatus(title: 'Individual'),
     EmploymentStatus(title: 'Enterprise (Corporation or Trust)'),
   ];
 
   int selectedStatusIndex = -1;
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(child:
       Padding(
         padding:  EdgeInsets.only(left: 20.w,right: 20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h)),
+            SizedBox(height: 20.h,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+              GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Image.asset("assets/icons/back.png",height: 34.h,width: 34.w,),
+              ),
+                Padding(
+                  padding:  EdgeInsets.only(right: 170.w),
+                  child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h),
+                ),
+              ],
+            ),
             SizedBox(height: 20.h,),
             Text(
               "Choose your account\ntype",
               style: TextStyle(
                 fontSize: 30.sp,
                 fontWeight: FontWeight.w700,
-                color: Palette.baseElementDark,
+                color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
               ),
             ),
             SizedBox(height: 20.h,),
@@ -68,12 +87,12 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
                       height: 60.h,
                       width: 368.w,
                       decoration: BoxDecoration(
-                        color: Palette.textFieldBlue,
+                        color:isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         border: Border.all(
-                          color: status.isSelected ? Palette.blue : Palette.blueSides,
+                          color: status.isSelected ? Palette.blue : (isDarkMode ? Palette.hintText: Palette.blueSides),
                           width: 1.0,
                         ),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(25),
                       ),
                       margin: EdgeInsets.only(right: 10.w,top: 10.h,bottom: 10.h,left: 10.w),
                       padding: EdgeInsets.all(10.0),
@@ -86,7 +105,7 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
                               child: Text(
                                 status.title,
                                 style: TextStyle(
-                                  color: status.isSelected ? Palette.blue : Palette.baseElementDark,
+                                  color: status.isSelected ? Palette.blue : (isDarkMode? Palette.darkWhite : Palette.baseElementDark),
                                   fontSize: 18.sp,
                                   fontWeight: status.isSelected ?FontWeight.w700 : FontWeight.w400,
                                 ),
@@ -110,7 +129,7 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
                   onPressed: (){
                     EmploymentStatus selectedStatus =
                     employmentStatusList[selectedStatusIndex];
-                    if (selectedStatus.title == 'individual') {
+                    if (selectedStatus.title == 'Individual') {
                     Navigator.push(
                       context,
                        MaterialPageRoute(

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/View/Screen/complete_your_profile/personal_informationScreen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
+import '../../../Theme/theme_manager.dart';
 class EmploymentStatus {
   final String title;
   bool isSelected;
@@ -35,9 +37,11 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
   int selectedStatusIndex = -1;
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-      backgroundColor: Palette.baseBackground,
+      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(child:
       SingleChildScrollView(
         child: Padding(
@@ -45,14 +49,28 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h)),
               SizedBox(height: 20.h,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Image.asset("assets/icons/back.png",height: 34.h,width: 34.w,),
+                  ),
+                  Padding(
+                    padding:  EdgeInsets.only(right: 170.w),
+                    child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h),
+                  ),
+                ],
+              ),              SizedBox(height: 20.h,),
               Text(
                 "Employment status",
                 style: TextStyle(
                   fontSize: 30.sp,
                   fontWeight: FontWeight.w700,
-                  color: Palette.baseElementDark,
+                  color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 ),
               ),
               SizedBox(height: 20.h,),
@@ -77,12 +95,12 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                       height: 60.h,
                       width: 368.w,
                       decoration: BoxDecoration(
-                        color: Palette.textFieldBlue,
+                        color:isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         border: Border.all(
-                          color: status.isSelected ? Palette.blue : Palette.blueSides ,
+                          color: status.isSelected ? Palette.blue : (isDarkMode ? Palette.hintText: Palette.blueSides),
                           width: 1.0,
                         ),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(25),
                       ),
                       margin: EdgeInsets.only(right: 10.w,top: 10.h,bottom: 10.h,left: 10.w),
                       padding: EdgeInsets.all(10.0),
@@ -92,7 +110,7 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                           Text(
                             status.title,
                             style: TextStyle(
-                              color: status.isSelected ? Palette.blue : Palette.baseElementDark,
+                              color: status.isSelected ? Palette.blue : (isDarkMode? Palette.darkWhite : Palette.baseElementDark),
                               fontSize: 18.sp,
                               fontWeight: status.isSelected ?FontWeight.w700 : FontWeight.w400,
                             ),
@@ -111,7 +129,7 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                 style: TextStyle(
                   fontSize: 30.sp,
                   fontWeight: FontWeight.w700,
-                  color: Palette.baseElementDark,
+                  color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 ),
               ),
               SizedBox(height: 20.h,),
@@ -129,20 +147,20 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                           labelText: "Employer name / Company",
                           hintText: "Enter name",
                           labelStyle: TextStyle(
-                            color: Palette.baseElementDark,
+                            color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w400,
                           ),
 
                           hintStyle: TextStyle(
-                            color: Palette.baseGrey,
+                            color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w400,
 
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color:Palette.blueSides,
+                              color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -161,7 +179,7 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           filled: true,
-                          fillColor:Palette.textFieldBlue,
+                          fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         ),
                     validator: (text) {
                       if(text!.isEmpty){
@@ -181,20 +199,20 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                         decoration: InputDecoration(
                           labelText: "Your job title",
                           labelStyle: TextStyle(
-                            color: Palette.baseElementDark,
+                            color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w400,
                           ),
                           hintText: "Enter job title",
                           hintStyle: TextStyle(
-                            color: Palette.baseGrey,
+                            color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w400,
 
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color:Palette.blueSides,
+                              color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -213,7 +231,7 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           filled: true,
-                          fillColor:Palette.textFieldBlue,
+                          fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         ),
                         validator: (text) {
                           if(text!.isEmpty){
@@ -233,20 +251,20 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                         decoration: InputDecoration(
                           labelText: "Your Occupation Industry",
                           labelStyle: TextStyle(
-                            color: Palette.baseElementDark,
+                            color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w400,
                           ),
                           hintText: "Write industry name",
                           hintStyle: TextStyle(
-                            color: Palette.baseGrey,
+                            color: isDarkMode ? Palette.hintText : Palette.baseGrey,
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w400,
 
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color:Palette.blueSides,
+                              color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -265,7 +283,7 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           filled: true,
-                          fillColor:Palette.textFieldBlue,
+                          fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         ),
                         validator: (text) {
                           if(text!.isEmpty){

@@ -27,7 +27,8 @@ class LineChartWidget extends StatelessWidget {
             strokeWidth: 1,
           );
         },
-        drawVerticalLine: true,
+        drawVerticalLine: false,
+        drawHorizontalLine: false,
         getDrawingVerticalLine: (value) {
           return FlLine(
             color: Palette.lightBlue,
