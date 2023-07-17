@@ -46,7 +46,6 @@ class PropertyInfoScreen extends StatefulWidget {
 class _PropertyInfoScreenState extends State<PropertyInfoScreen> {
   late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
-
   @override
   void initState() {
     super.initState();
@@ -505,13 +504,17 @@ class _PropertyInfoScreenState extends State<PropertyInfoScreen> {
                     borderRadius: BorderRadius.circular(10.0),
 
                   ),
-                   child:
-                    AspectRatio(
-                      aspectRatio: _videoPlayerController.value.aspectRatio,
-                      child: Chewie(controller: _chewieController),
-                    ),
-                ),
-              ),
+                   child: SizedBox(
+                     height: 180.h,
+                     width: 344.w,
+                     child: AspectRatio(
+                       aspectRatio: _videoPlayerController.value.aspectRatio,
+                       child: Chewie(controller: _chewieController),
+                                    ),
+                              ),
+                              ),
+                            ),
+
               SizedBox(height: 11.h,),
               Divider(
                 color:  isDarkMode? Color(0xff404550): Color(0xffDEDEDE),

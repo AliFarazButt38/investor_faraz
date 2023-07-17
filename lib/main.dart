@@ -37,13 +37,11 @@ import 'View/Screen/complete_your_profile/document_Screen.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  ThemeMode? savedThemeMode = ThemeMode.values[prefs.getInt('themeMode') ?? 0];
-
+  bool isDarkMode = prefs.getBool('isDarkMode') ?? false;
 
   runApp(ChangeNotifierProvider<ThemeManager>(
-      create:(_)=>ThemeManager(savedThemeMode),
+      create:(_)=>ThemeManager(isDarkMode),
       child: const MyApp()));
 }
 
@@ -63,7 +61,6 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme,
       themeMode: themeManager.themeMode,
       home: PropertyInfoScreen(),
-
     );
   }
 }
