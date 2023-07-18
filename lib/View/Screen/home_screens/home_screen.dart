@@ -18,27 +18,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late VideoPlayerController _videoPlayerController;
-  late ChewieController _chewieController;
-
+  List<String> videoUrls = [
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+  ];
+  List<ChewieController> chewieControllers = [];
+  final CarouselController carouselController2 = CarouselController();
+  int currentIndex2 = 0;
   @override
   void initState() {
     super.initState();
     currentOfferColor = Palette.blue;
     futureOfferColor = Colors.white;
-    _videoPlayerController = VideoPlayerController.network(
-        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
-    _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController,
-      autoPlay: true,
-      looping: true,
-    );
+    for (var url in videoUrls) {
+      chewieControllers.add(
+        ChewieController(
+          videoPlayerController: VideoPlayerController.network(url),
+          autoPlay: false,
+          looping: false,
+          // Other ChewieController options as needed
+        ),
+      );
+    }
   }
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
-    _chewieController.dispose();
+    for (var controller in chewieControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -169,339 +178,184 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 SizedBox(height: 10.h,),
 
-                // CarouselSlider(
-                //
-                //     items: [
-                //       Container(
-                //         width: 380.w,
-                //         height: 260.h,
-                //         decoration: BoxDecoration(
-                //           borderRadius: BorderRadius.circular(10),
-                //           gradient: LinearGradient(
-                //             colors: [
-                //               Color(0xFF000C79),
-                //               Color(0xFF358CB8),
-                //             ],
-                //           ),
-                //         ),
-                //         child: Padding(
-                //           padding:
-                //           EdgeInsets.only(left: 15.w, right: 10.w, top: 10.h),
-                //           child: Column(
-                //             crossAxisAlignment: CrossAxisAlignment.start,
-                //             children: [
-                //               Row(
-                //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //                 children: [
-                //                   Image.asset("assets/icons/blocks.png"),
-                //                   Container(
-                //                     width: 156.w,
-                //                     height: 30.h,
-                //                     decoration: BoxDecoration(
-                //                       color: isDarkMode ? Color(0xffEBF8FF ):Palette.blue100,
-                //                       borderRadius: BorderRadius.circular(10.0),
-                //                     ),
-                //                     alignment: Alignment.center,
-                //                     child: Text(
-                //                       "Return Target: 10-17% ",
-                //                       style: TextStyle(
-                //                         color: Color(0xff286CA8),
-                //                         fontWeight: FontWeight.w400,
-                //                         fontSize: 14.sp,
-                //                       ),
-                //                     ),
-                //                   ),
-                //                 ],
-                //               ),
-                //               SizedBox(
-                //                 height: 10.h,
-                //               ),
-                //               Text(
-                //                 "BlackHole Investment's",
-                //                 style: TextStyle(
-                //                   color: Color(0xff25E3EF),
-                //                   fontSize: 20.sp,
-                //                   fontWeight: FontWeight.w400,
-                //                 ),
-                //               ),
-                //               SizedBox(
-                //                 height: 10.h,
-                //               ),
-                //               Text(
-                //                 "RE Development Fund I",
-                //                 style: TextStyle(
-                //                   color: Palette.baseWhite,
-                //                   fontSize: 16.sp,
-                //                   fontWeight: FontWeight.w400,
-                //                 ),
-                //               ),
-                //               SizedBox(
-                //                 height: 10.h,
-                //               ),
-                //               Row(
-                //                 children: [
-                //                   Container(
-                //                     width: 105.w,
-                //                     height: 28.h,
-                //                     decoration: BoxDecoration(
-                //                         borderRadius: BorderRadius.circular(10.0),
-                //                         border: Border.all(
-                //                           color: Palette.baseWhite,
-                //                         )),
-                //                     alignment: Alignment.center,
-                //                     child: Text(
-                //                       "Private Property",
-                //                       style: TextStyle(
-                //                         color: Palette.baseWhite,
-                //                         fontWeight: FontWeight.w400,
-                //                         fontSize: 12.sp,
-                //                       ),
-                //                     ),
-                //                   ),
-                //                   Padding(
-                //                     padding: EdgeInsets.only(left: 5.w),
-                //                     child: Container(
-                //                       width: 76.w,
-                //                       height: 28.h,
-                //                       decoration: BoxDecoration(
-                //                           borderRadius: BorderRadius.circular(10.0),
-                //                           border: Border.all(
-                //                             color: Palette.baseWhite,
-                //                           )),
-                //                       alignment: Alignment.center,
-                //                       child: Text(
-                //                         "Urban Infill",
-                //                         style: TextStyle(
-                //                           color: Palette.baseWhite,
-                //                           fontWeight: FontWeight.w400,
-                //                           fontSize: 12.sp,
-                //                         ),
-                //                       ),
-                //                     ),
-                //                   ),
-                //                   Padding(
-                //                     padding: EdgeInsets.only(left: 5.w),
-                //                     child: Container(
-                //                       width: 28.w,
-                //                       height: 28.h,
-                //                       decoration: BoxDecoration(
-                //                         borderRadius: BorderRadius.circular(12.0),
-                //                         color: Palette.baseWhite,
-                //                       ),
-                //                       alignment: Alignment.center,
-                //                       child: Text(
-                //                         "+5",
-                //                         style: TextStyle(
-                //                           color: Palette.baseElementDark,
-                //                           fontWeight: FontWeight.w700,
-                //                           fontSize: 12.sp,
-                //                         ),
-                //                       ),
-                //                     ),
-                //                   ),
-                //                 ],
-                //               ),
-                //               SizedBox(
-                //                 height: 30.h,
-                //               ),
-                //               Center(
-                //                 child: SizedBox(
-                //                   width: 336.w,
-                //                   height: 45.h,
-                //                   child: ElevatedButton(
-                //                     onPressed: () {
-                //                       // Handle sign in button press here
-                //                     },
-                //                     child: Text(
-                //                       "Learn More...",
-                //                       style: TextStyle(
-                //                           color: Color(0xff1D529B),
-                //                           fontSize: 16.sp,
-                //                           fontWeight: FontWeight.w700),
-                //                     ),
-                //                     style: ElevatedButton.styleFrom(
-                //                       primary: Color(0xffF8F8F8),
-                //                       shape: RoundedRectangleBorder(
-                //                         borderRadius: BorderRadius.circular(20.0),
-                //                       ),
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //       ),
-                //     ],
-                //     options:CarouselOptions(
-                //
-                //       enableInfiniteScroll: true,
-                //       autoPlay: false,
-                //       enlargeCenterPage: true,
-                //       scrollDirection: Axis.horizontal,
-                //     ),
-                // ),
+                CarouselSlider(
 
-                Container(
-                  width: 380.w,
-                  height: 260.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xFF000C79),
-                        Color(0xFF358CB8),
-                      ],
-                    ),
-                  ),
-                  child: Padding(
-                    padding:
-                        EdgeInsets.only(left: 15.w, right: 10.w, top: 10.h),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Image.asset("assets/icons/blocks.png"),
-                            Container(
-                              width: 156.w,
-                              height: 30.h,
-                              decoration: BoxDecoration(
-                                color: isDarkMode ? Color(0xffEBF8FF ):Palette.blue100,
-                                borderRadius: BorderRadius.circular(10.0),
+                    items: [
+                      Container(
+                        width: 380.w,
+                        height: 260.h,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFF000C79),
+                              Color(0xFF358CB8),
+                            ],
+                          ),
+                        ),
+                        child: Padding(
+                          padding:
+                              EdgeInsets.only(left: 15.w, right: 10.w, top: 10.h),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Image.asset("assets/icons/blocks.png"),
+                                  Container(
+                                    width: 156.w,
+                                    height: 30.h,
+                                    decoration: BoxDecoration(
+                                      color: isDarkMode ? Color(0xffEBF8FF ):Palette.blue100,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Return Target: 10-17% ",
+                                      style: TextStyle(
+                                        color: Color(0xff286CA8),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14.sp,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Return Target: 10-17% ",
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              Text(
+                                "BlackHole Investment's",
                                 style: TextStyle(
-                                  color: Color(0xff286CA8),
+                                  color: Color(0xff25E3EF),
+                                  fontSize: 20.sp,
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 14.sp,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Text(
-                          "BlackHole Investment's",
-                          style: TextStyle(
-                            color: Color(0xff25E3EF),
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Text(
-                          "RE Development Fund I",
-                          style: TextStyle(
-                            color: Palette.baseWhite,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              width: 105.w,
-                              height: 28.h,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  border: Border.all(
-                                    color: Palette.baseWhite,
-                                  )),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Private Property",
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              Text(
+                                "RE Development Fund I",
                                 style: TextStyle(
                                   color: Palette.baseWhite,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 12.sp,
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 5.w),
-                              child: Container(
-                                width: 76.w,
-                                height: 28.h,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: Palette.baseWhite,
-                                    )),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Urban Infill",
-                                  style: TextStyle(
-                                    color: Palette.baseWhite,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12.sp,
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 105.w,
+                                    height: 28.h,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        border: Border.all(
+                                          color: Palette.baseWhite,
+                                        )),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Private Property",
+                                      style: TextStyle(
+                                        color: Palette.baseWhite,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 5.w),
+                                    child: Container(
+                                      width: 76.w,
+                                      height: 28.h,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          border: Border.all(
+                                            color: Palette.baseWhite,
+                                          )),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Urban Infill",
+                                        style: TextStyle(
+                                          color: Palette.baseWhite,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12.sp,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 5.w),
+                                    child: Container(
+                                      width: 28.w,
+                                      height: 28.h,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                        color: Palette.baseWhite,
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "+5",
+                                        style: TextStyle(
+                                          color: Palette.baseElementDark,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 12.sp,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 30.h,
+                              ),
+                              Center(
+                                child: SizedBox(
+                                  width: 336.w,
+                                  height: 45.h,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      // Handle sign in button press here
+                                    },
+                                    child: Text(
+                                      "Learn More...",
+                                      style: TextStyle(
+                                          color: Color(0xff1D529B),
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Color(0xffF8F8F8),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20.0),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 5.w),
-                              child: Container(
-                                width: 28.w,
-                                height: 28.h,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  color: Palette.baseWhite,
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "+5",
-                                  style: TextStyle(
-                                    color: Palette.baseElementDark,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 12.sp,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 30.h,
-                        ),
-                        Center(
-                          child: SizedBox(
-                            width: 336.w,
-                            height: 45.h,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // Handle sign in button press here
-                              },
-                              child: Text(
-                                "Learn More...",
-                                style: TextStyle(
-                                    color: Color(0xff1D529B),
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xffF8F8F8),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                              ),
-                            ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
+
+                    ],
+                    options:CarouselOptions(
+                      scrollPhysics: BouncingScrollPhysics(),
+                      aspectRatio: 16 / 9,
+                      viewportFraction: 1,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+
+                        });
+                      },
                     ),
-                  ),
                 ),
+
+
                 SizedBox(
                   height: 20.h,
                 ),
@@ -532,11 +386,51 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(
                           height: 180.h,
                           width: 344.w,
-                          child: AspectRatio(
-                            aspectRatio:
-                                _videoPlayerController.value.aspectRatio,
-                            child: Chewie(controller: _chewieController),
+                          child:    CarouselSlider(
+                            items: chewieControllers.map((chewieController) {
+                              return Builder(
+                                builder: (BuildContext context) {
+                                  return Chewie(controller: chewieController);
+                                },
+                              );
+                            }).toList(),
+                            carouselController: carouselController2,
+                            options: CarouselOptions(
+                              scrollPhysics: BouncingScrollPhysics(),
+                              autoPlay: false,
+                              aspectRatio: 16 / 9,
+                              viewportFraction: 1,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  currentIndex2 = index;
+                                });
+                              },
+                            ),
                           ),
+                        ),
+                        SizedBox(height: 20,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: chewieControllers.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            return GestureDetector(
+                              onTap: () {
+                                carouselController2.animateToPage(index);
+                                setState(() {
+                                  currentIndex2 = index;
+                                });
+                              },
+                              child: Container(
+                                width: 7,
+                                height: 7,
+                                margin: EdgeInsets.symmetric(horizontal: 3.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: currentIndex2 == index ? Palette.blue :Palette.blue100,
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
                         SizedBox(
                           height: 20.h,

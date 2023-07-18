@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,6 +18,29 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+
+  Future<void> verifyEmail() async {
+    try {
+      // Refresh the user's data to get the latest email verification status
+      await FirebaseAuth.instance.currentUser!.reload();
+
+      if (FirebaseAuth.instance.currentUser!.emailVerified) {
+        // Email is verified, move to the CompleteYourProfileScreen
+        Navigator.push(context, MaterialPageRoute(builder: (context) => EmailVerifiedScreen()));
+
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginToAccountScreen()));
+        });
+      } else {
+        // Show an error message or perform appropriate action if email is not verified
+        print('Email not verified yet');
+      }
+    } catch (e) {
+      // Handle email verification errors here
+      print('Failed to verify email: ${e.toString()}');
+    }
+  }
+
   int otp1=0;
   int otp2=0;
   int otp3=0;
@@ -220,13 +244,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 width: 304.w,
                 height: 56.h,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => EmailVerifiedScreen()));
-
-                    Future.delayed(Duration(seconds: 3), () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CompleteYourProfile()));
-                    });
-                  },
+                  onPressed: verifyEmail,
                   child: Text(
                     "Submit",
                     style: TextStyle(color: Colors.white),

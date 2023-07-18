@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
+import '../home_screens/home_screen.dart';
 
 class LoginToAccountScreen extends StatefulWidget {
   @override
@@ -15,11 +17,111 @@ class LoginToAccountScreen extends StatefulWidget {
 }
 
 class _LoginToAccountScreenState extends State<LoginToAccountScreen> {
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isChecked = false;
   bool isFieldsEmpty = true;
   bool isPasswordVisible=false;
+  bool isCheckingLogin = false;
+
+  void showErrorMessage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 4.0,
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: Colors.red, // Customize the error icon color
+                ),
+                SizedBox(height: 16.0),
+                Text(
+                  "Error",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.red,
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                Text(
+                  "Incorrect email or password. Please try again.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue, // Customize the button color
+                  ),
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+  void login() {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      // Show an error message or perform appropriate action for empty fields
+      return;
+    }
+
+    // Show loading while checking the login
+    setState(() {
+      isCheckingLogin = true;
+    });
+
+    FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((userCredential) {
+      // User login successful, move to the home screen or another screen as needed
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => NavigationBottom()),
+      );
+    }).catchError((error) {
+      // Handle login errors here
+      print('Failed to sign in: ${error.toString()}');
+      // Show an error message or perform appropriate action for login failure
+      showErrorMessage(context); // Call the showErrorMessage function to display the dialog
+    }).whenComplete(() {
+      // Reset the loading state after login attempt (whether successful or not)
+      setState(() {
+        isCheckingLogin = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -230,12 +332,10 @@ class _LoginToAccountScreenState extends State<LoginToAccountScreen> {
                     width: 304.w,
                     height: 56.h,
                     child: ElevatedButton(
-                      onPressed: isFieldsEmpty ? null : () {
-                        // Handle continue button press here
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>CompleteYourProfile()));
-
-                      },
-                      child: Text(
+                      onPressed: isFieldsEmpty || isCheckingLogin ? null : login,
+                      child:isCheckingLogin
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text(
                         "Continue",
                         style: TextStyle(color: Colors.white,fontSize: 18.sp,fontWeight: FontWeight.w700),
                       ),
@@ -254,11 +354,7 @@ class _LoginToAccountScreenState extends State<LoginToAccountScreen> {
                     width: 304.w,
                     height: 56.h,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>CompleteYourProfile()));
-
-                        // Handle sign in button press here
-                      },
+                      onPressed:login,
                       child: Text(
                         "Sign Up",
                         style: TextStyle(color: Palette.blue,

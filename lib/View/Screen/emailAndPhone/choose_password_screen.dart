@@ -1,13 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/View/Screen/emailAndPhone/email_verificationScreen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Model/user_model.dart';
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 
 class ChoosePasswordScreen extends StatefulWidget {
+  final String userEmail;
+
+  ChoosePasswordScreen({required this.userEmail});
   @override
   _ChoosePasswordScreenState createState() => _ChoosePasswordScreenState();
 }
@@ -19,26 +25,205 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
   bool isPasswordMatch = true;
   bool isPasswordVisible=false;
   bool isConfirmPasswordVisible=false;
+  bool isCheckingPassword = false;
 
-  void setPassword() {
+  void showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 4.0,
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: Colors.red, // Customize the error icon color
+                ),
+                SizedBox(height: 16.0),
+                Text(
+                  "Error",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.red,
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                Text(
+                  message,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue, // Customize the button color
+                  ),
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Future<void> _storeUserDataInFirestore(UserCredential userCredential) async {
+  //   try {
+  //     String email = userCredential.user!.email!;
+  //     String uid = userCredential.user!.uid;
+  //
+  //     // Create a UserModel instance
+  //     UserModel user = UserModel(
+  //       uid: uid,
+  //       email: email,
+  //       // Add other fields for the user here
+  //     );
+  //
+  //     // Convert UserModel to a Map using toMap() method
+  //     Map<String, dynamic> userData = user.toMap();
+  //
+  //     // Store the user data in Firestore
+  //     await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(uid) // Use the UID as the document ID
+  //         .set(userData);
+  //   } catch (e) {
+  //     print('Error adding user data to Firestore: $e');
+  //   }
+  // }
+
+  void setPassword() async {
     String password = passwordController.text;
     String confirmPassword = confirmPasswordController.text;
 
+    // Show loading while checking the password
+    setState(() {
+      isCheckingPassword = true;
+    });
+
     if (password.isEmpty || confirmPassword.isEmpty) {
-      // Display an error message or perform appropriate action for empty fields
-      return;
+      showErrorDialog(context,"Password fields cannot be empty.");
+    } else if (password.length < 6) {
+      showErrorDialog(context,"Password should be at least 6 characters.");
+    } else if (password != confirmPassword) {
+      showErrorDialog(context,"Passwords do not match. Please try again.");
+    } else {
+      // Password validation succeeded, continue with account creation
+      try {
+        UserCredential userCredential =
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: widget.userEmail,
+          password: password,
+        );
+
+        // Send verification email to the user
+        await userCredential.user!.sendEmailVerification();
+
+        // Navigate to the EmailVerificationScreen to enter the verification code
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => EmailVerificationScreen()),
+        );
+      } catch (e) {
+        // Handle account creation errors here
+        print('Failed to create account: ${e.toString()}');
+      }
     }
 
-    if (password != confirmPassword) {
-      setState(() {
-        isPasswordMatch = false;
-      });
-    } else {
-      // Passwords match, navigate to the next screen
+    // Reset the loading state after checking the password
+    setState(() {
+      isCheckingPassword = false;
+    });
+  }
+
+  // void setPassword() async {
+  //   String password = passwordController.text;
+  //   String confirmPassword = confirmPasswordController.text;
+  //
+  //   // Show loading while checking the password
+  //   setState(() {
+  //     isCheckingPassword = true;
+  //   });
+  //
+  //   if (password.isEmpty || confirmPassword.isEmpty) {
+  //     showErrorDialog(context, "Password fields cannot be empty.");
+  //   } else if (password.length < 6) {
+  //     showErrorDialog(context, "Password should be at least 6 characters.");
+  //   } else if (password != confirmPassword) {
+  //     showErrorDialog(context, "Passwords do not match. Please try again.");
+  //   } else {
+  //     // Password validation succeeded, continue with account creation
+  //     try {
+  //       UserCredential userCredential =
+  //       await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  //         email: widget.userEmail,
+  //         password: password,
+  //       );
+  //
+  //       // Store user data in Firestore
+  //       await _storeUserDataInFirestore(userCredential);
+  //
+  //       // Send verification email to the user
+  //       await userCredential.user!.sendEmailVerification();
+  //
+  //       // Navigate to the EmailVerificationScreen to enter the verification code
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => EmailVerificationScreen()),
+  //       );
+  //     } catch (e) {
+  //       // Handle account creation errors here
+  //       print('Failed to create account: ${e.toString()}');
+  //     }
+  //   }
+  //
+  //   // Reset the loading state after checking the password
+  //   setState(() {
+  //     isCheckingPassword = false;
+  //   });
+  // }
+
+
+  Future<void> _createAccount(String email, String password) async {
+    try {
+      UserCredential userCredential =
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Account creation successful, you can navigate to the next screen or perform other actions.
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => EmailVerificationScreen()),
+        MaterialPageRoute(
+          builder: (context) => EmailVerificationScreen(),
+        ),
       );
+    } on FirebaseAuthException catch (e) {
+      // Handle account creation errors here (e.g., email already exists, weak password, etc.)
+      print('Failed to create account: ${e.message}');
     }
   }
 
@@ -236,8 +421,10 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                   width: 304.w,
                   height: 56.h,
                   child: ElevatedButton(
-                    onPressed: setPassword,
-                    child: Text(
+                    onPressed: isCheckingPassword ? null : setPassword,
+                    child: isCheckingPassword
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text(
                       "Set Password",
                       style: TextStyle(color: Colors.white),
                     ),
@@ -256,9 +443,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                   width: 304.w,
                   height: 56.h,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Handle sign in button press here
-                    },
+                    onPressed:setPassword,
                     child: Text(
                       "Sign In",
                       style: TextStyle(color: Palette.blue),

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:investor_flutter/Theme/theme_constant.dart';
 import 'package:investor_flutter/Theme/theme_manager.dart';
@@ -37,20 +38,20 @@ import 'View/Screen/complete_your_profile/document_Screen.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isDarkMode = prefs.getBool('isDarkMode') ?? false;
 
+
   runApp(ChangeNotifierProvider<ThemeManager>(
       create:(_)=>ThemeManager(isDarkMode),
-      child: const MyApp()));
+      child:  MyApp()));
 }
 
 
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
          theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeManager.themeMode,
-      home: PropertyInfoScreen(),
+      home:  EmailAddressScreen(),
     );
   }
 }

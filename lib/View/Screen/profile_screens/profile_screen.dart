@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -5,8 +6,11 @@ import 'package:investor_flutter/Theme/Palette/palette.dart';
 import 'package:investor_flutter/Theme/theme_manager.dart';
 import 'package:investor_flutter/View/Screen/bank_Screens/transaction_screen1.dart';
 import 'package:investor_flutter/View/Screen/emailAndPhone/login_accountScreen.dart';
+import 'package:investor_flutter/View/Screen/home_screens/dashboard_screen.dart';
 import 'package:investor_flutter/View/Screen/profile_screens/personal_profile_infoScreen.dart';
 import 'package:provider/provider.dart';
+
+import '../bottom_navigation/bottom_navigation.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -14,6 +18,24 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  Future<void> _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+
+      // Navigate to the LoginToAccountScreen and remove all previous routes
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginToAccountScreen()),
+            (Route<dynamic> route) => false,
+      );
+    } catch (e) {
+      print("Error signing out: ${e.toString()}");
+    }
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
@@ -36,7 +58,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     isDarkMode
                         ? GestureDetector(
                             onTap: () {
-                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DashboardScreen()));
                             },
                             child: Image.asset(
                               "assets/icons/darkBack.png",
@@ -46,7 +71,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           )
                         : GestureDetector(
                             onTap: () {
-                              Navigator.pop(context);
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DashboardScreen()),
+                                  (route) => false);
                             },
                             child: Image.asset(
                               "assets/icons/goBack.png",
@@ -138,13 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   thickness: 1,
                 ),
                 GestureDetector(
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginToAccountScreen()),
-                          (route) => false);
-                    },
+                    onTap:_signOut,
                     child: buildListTile('assets/icons/logout.svg', 'Log Out',
                         themeManager: themeManager)),
                 SizedBox(

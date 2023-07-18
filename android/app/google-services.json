@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "798159332068",
+    "project_id": "investtor-tz",
+    "storage_bucket": "investtor-tz.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798159332068:android:d0b65d750e36d163ae02f1",
+        "android_client_info": {
+          "package_name": "com.badiz.investtor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798159332068-q16o38pttikjoqcj4m9n181tikgboojd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqWIQkqKjGuvPIEz5iflu1OPemXUWVP4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798159332068-q16o38pttikjoqcj4m9n181tikgboojd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -176,7 +176,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       Positioned(
                         bottom:
-                            20, // Adjust the bottom value to position the dots
+                            40, // Adjust the bottom value to position the dots
                         left: 0,
                         right: 0,
                         child: Row(

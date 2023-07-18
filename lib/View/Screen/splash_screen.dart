@@ -1,12 +1,18 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:investor_flutter/Theme/Palette/palette.dart';
+import 'package:investor_flutter/View/Screen/bottom_navigation/bottom_navigation.dart';
 import 'package:investor_flutter/View/Screen/home_screens/home_screen.dart';
 import 'package:investor_flutter/View/Screen/onBoarding/onboarding_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 import '../../Theme/theme_manager.dart';
+import 'emailAndPhone/email_verificationScreen.dart';
+import 'emailAndPhone/login_accountScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
