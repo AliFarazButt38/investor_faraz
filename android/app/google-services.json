@@ -29,6 +29,13 @@
             {
               "client_id": "798159332068-q16o38pttikjoqcj4m9n181tikgboojd.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "798159332068-93s8fekg754lh6uo3p5dma6u41hk0tbt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.badiz.investtor"
+              }
             }
           ]
         }
