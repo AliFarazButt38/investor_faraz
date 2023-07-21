@@ -29,13 +29,9 @@ class _EmailVerifiedScreenState extends State<EmailVerifiedScreen> {
             children: [
               isDarkMode ?SvgPicture.asset("assets/icons/darkVerfied.svg",height: 182.h,width: 182.w,) :SvgPicture.asset("assets/icons/done.svg",height: 60.h,width: 60.w,),
               SizedBox(height: 10.h,),
-              Text("Verified!",style: TextStyle(
+              Text("Account Verified!",style: TextStyle(
                   color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                   fontWeight: FontWeight.w700,fontSize: 28.sp),),
-              SizedBox(height: 10.h,),
-              Text("We’ve verified your email successfully.",style: TextStyle(
-                  color: isDarkMode ? Palette.hintText : Palette.baseGrey,
-                  fontWeight: FontWeight.w400,fontSize: 18.sp),)
             ],
           ),
         ),

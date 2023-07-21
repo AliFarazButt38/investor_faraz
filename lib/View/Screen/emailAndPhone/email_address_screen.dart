@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,6 +29,8 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
   bool isCheckingEmail = false;
   String? selectedCountry = 'US';
   String? errorMessage;
+
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -54,11 +57,20 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
   void initState(){
     phoneController.text;
     super.initState();
-
   }
 
 
+  Future<bool> checkIfPhoneExists(String phoneNumber) async {
+    try {
+      final signInMethods = await FirebaseAuth.instance.fetchSignInMethodsForEmail(phoneNumber);
 
+      // If the signInMethods list is not empty, it means the phone number is registered with Firebase
+      return signInMethods.isNotEmpty;
+    } catch (e) {
+      print('Error checking phone number: $e');
+      return false; // Return false in case of an error to handle it appropriately
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -303,7 +315,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                             //   ScaffoldMessenger.of(context).showSnackBar(
                             //       SnackBar(content: Text('Phone number should contain exactly 10 digits')));
                             // }
-                            if (mob_number.length != 10) {
+                            if (mob_number.length != 11) {
                               setState(() {
                                 // Update the error message
                                 errorMessage = 'Phone number should contain exactly 10 digits';
@@ -359,21 +371,47 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                         //   Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneOtpScreen()));
                         //   // Handle send OTP button press here
                         // }:null,
-                        onPressed: ()async{
+                        onPressed: () async {
                           String countryCode = phoneController.text.startsWith('+') ? phoneController.text : '+${phoneController.text}';
                           String phoneNumber = mob_number;
                           String fullPhoneNumber = '$countryCode$phoneNumber';
-                          await FirebaseAuth.instance.verifyPhoneNumber(
-                            phoneNumber: fullPhoneNumber,
-                            verificationCompleted: (PhoneAuthCredential credential) {},
-                            verificationFailed: (FirebaseAuthException e) {},
-                            codeSent: (String verificationId , int? resendToken) {
-                              EmailAddressScreen.verify=verificationId;
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneOtpScreen()));
-                            },
-                            codeAutoRetrievalTimeout: (String verificationId ) {},
-                          );
+
+                          bool phoneExists = await checkIfPhoneExists(fullPhoneNumber);
+
+                          if (phoneExists) {
+                            // Show dialog if phone number already exists
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CupertinoAlertDialog(
+                                  title: Text('Phone Number Exists'),
+                                  content: Text('The entered phone number already exists.'),
+                                  actions: [
+                                    CupertinoDialogAction(
+                                      child: Text('OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            // Proceed to send the OTP for verification
+                            await FirebaseAuth.instance.verifyPhoneNumber(
+                              phoneNumber: fullPhoneNumber,
+                              verificationCompleted: (PhoneAuthCredential credential) {},
+                              verificationFailed: (FirebaseAuthException e) {},
+                              codeSent: (String verificationId , int? resendToken) {
+                                EmailAddressScreen.verify = verificationId;
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneOtpScreen()));
+                              },
+                              codeAutoRetrievalTimeout: (String verificationId ) {},
+                            );
+                          }
                         },
+
                         child: Text(
                           "Send OTP",
                           style: TextStyle(color: Colors.white),
