@@ -7,6 +7,7 @@ import 'package:investor_flutter/View/Screen/bottom_navigation/bottom_navigation
 import 'package:investor_flutter/View/Screen/complete_your_profile/complete_profileScreen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Auth/auth_Service.dart';
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 import '../home_screens/home_screen.dart';
@@ -87,41 +88,54 @@ class _LoginToAccountScreenState extends State<LoginToAccountScreen> {
     );
   }
 
-
-  void login() {
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      // Show an error message or perform appropriate action for empty fields
-      return;
-    }
-
-    // Show loading while checking the login
+  void login() async {
     setState(() {
       isCheckingLogin = true;
     });
 
-    FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password)
-        .then((userCredential) {
-      // User login successful, move to the home screen or another screen as needed
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => NavigationBottom()),
-      );
-    }).catchError((error) {
-      // Handle login errors here
-      print('Failed to sign in: ${error.toString()}');
-      // Show an error message or perform appropriate action for login failure
-      showErrorMessage(context); // Call the showErrorMessage function to display the dialog
-    }).whenComplete(() {
-      // Reset the loading state after login attempt (whether successful or not)
-      setState(() {
-        isCheckingLogin = false;
-      });
+    String? errorMessage = await AuthService.login(context, emailController, passwordController); // Call the static login method from AuthService
+
+    setState(() {
+      if (errorMessage != null) {
+        showErrorMessage(context);
+      }
+      isCheckingLogin = false;
     });
   }
+  // void login() {
+  //   String email = emailController.text.trim();
+  //   String password = passwordController.text.trim();
+  //
+  //   if (email.isEmpty || password.isEmpty) {
+  //     // Show an error message or perform appropriate action for empty fields
+  //     return;
+  //   }
+  //
+  //   // Show loading while checking the login
+  //   setState(() {
+  //     isCheckingLogin = true;
+  //   });
+  //
+  //   FirebaseAuth.instance
+  //       .signInWithEmailAndPassword(email: email, password: password)
+  //       .then((userCredential) {
+  //     // User login successful, move to the home screen or another screen as needed
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => NavigationBottom()),
+  //     );
+  //   }).catchError((error) {
+  //     // Handle login errors here
+  //     print('Failed to sign in: ${error.toString()}');
+  //     // Show an error message or perform appropriate action for login failure
+  //     showErrorMessage(context); // Call the showErrorMessage function to display the dialog
+  //   }).whenComplete(() {
+  //     // Reset the loading state after login attempt (whether successful or not)
+  //     setState(() {
+  //       isCheckingLogin = false;
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +233,7 @@ class _LoginToAccountScreenState extends State<LoginToAccountScreen> {
                           controller: passwordController,
                           onChanged: (value) {
                             setState(() {
-                             // Reset the error state on change
+                              // Reset the error state on change
                             });
                           },
                           decoration: InputDecoration(
@@ -272,101 +286,78 @@ class _LoginToAccountScreenState extends State<LoginToAccountScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20.h,),
-                Padding(
-                  padding:  EdgeInsets.only(left: 10.w,right: 10.w),
-                  child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-
-                          Container(
-                          child: InkWell(
-                              onTap: () {
-                  setState(() {
-                  isChecked = !isChecked;
-                  });
-                  },
-                              child: Row(
-                                children: [
-                                    Container(
-                                      width: 20.w,
-                                      height: 20.h,
-                                      decoration: BoxDecoration(
-                                        color: isChecked ? Palette.blue : Colors.transparent,
-                                        borderRadius: BorderRadius.circular(4.0),
-                                        border: isChecked ? null : Border.all(color: Palette.blue, width: 1.0),
-                                      ),
-                                      child: isChecked
-                                          ? Icon(
-                                        Icons.check,
-                                        color: Palette.baseWhite,
-                                        size: 18.sp,
-                                      )
-                                          : null,
-                                    ),
-                                    SizedBox(width: 8.0),
-                  Text(
-                    'Remember Me',
-                    style: TextStyle(
-                      fontSize: 16.0.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Palette.blue,
-                    ),
-                  ),
-
-              ],
-            ),
-        ),
-      ),
-                      Text("Forgot Password?",style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16.sp,
-                       color: Palette.blue,
-                      ),),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 50.h,),
-                Center(
-                  child: SizedBox(
-                    width: 304.w,
-                    height: 56.h,
-                    child: ElevatedButton(
-                      onPressed: isFieldsEmpty || isCheckingLogin ? null : login,
-                      child:isCheckingLogin
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                        "Continue",
-                        style: TextStyle(color: Colors.white,fontSize: 18.sp,fontWeight: FontWeight.w700),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: isFieldsEmpty ? Colors.grey : Palette.blue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                //           SizedBox(height: 20.h,),
+                //           Padding(
+                //             padding:  EdgeInsets.only(left: 10.w,right: 10.w),
+                //             child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //               children: [
+                //
+                //                     Container(
+                //                     child: InkWell(
+                //                         onTap: () {
+                //             setState(() {
+                //             isChecked = !isChecked;
+                //             });
+                //             },
+                //                         child: Row(
+                //                           children: [
+                //                               Container(
+                //                                 width: 20.w,
+                //                                 height: 20.h,
+                //                                 decoration: BoxDecoration(
+                //                                   color: isChecked ? Palette.blue : Colors.transparent,
+                //                                   borderRadius: BorderRadius.circular(4.0),
+                //                                   border: isChecked ? null : Border.all(color: Palette.blue, width: 1.0),
+                //                                 ),
+                //                                 child: isChecked
+                //                                     ? Icon(
+                //                                   Icons.check,
+                //                                   color: Palette.baseWhite,
+                //                                   size: 18.sp,
+                //                                 )
+                //                                     : null,
+                //                               ),
+                //                               SizedBox(width: 8.0),
+                //             Text(
+                //               'Remember Me',
+                //               style: TextStyle(
+                //                 fontSize: 16.0.sp,
+                //                 fontWeight: FontWeight.w400,
+                //                 color: Palette.blue,
+                //               ),
+                //             ),
+                //
+                //         ],
+                //       ),
+                //   ),
+                // ),
+                //                 Text("Forgot Password?",style: TextStyle(
+                //                   fontWeight: FontWeight.w700,
+                //                   fontSize: 16.sp,
+                //                  color: Palette.blue,
+                //                 ),),
+                //               ],
+                //             ),
+                //           ),
+                //           SizedBox(height: 50.h,),
                 SizedBox(height: 15.h,),
                 Center(
                   child: SizedBox(
                     width: 304.w,
                     height: 56.h,
                     child: ElevatedButton(
-                      onPressed:login,
-                      child: Text(
-                        "Sign Up",
-                        style: TextStyle(color: Palette.blue,
-                        fontWeight: FontWeight.w700,
-                          fontSize: 18.sp,
-                        ),
+                      onPressed: isCheckingLogin ? null : login,
+                      child:isCheckingLogin
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                        "Sign in",
+                        style: TextStyle(color: Colors.white,fontSize: 18.sp,fontWeight: FontWeight.w700),
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: isDarkMode ? Palette.darkBackground : Color(0xffF8F8F8),
+                        primary:  Palette.blue,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25.0),
-                          side: BorderSide(color: Palette.blue),
                         ),
                       ),
                     ),

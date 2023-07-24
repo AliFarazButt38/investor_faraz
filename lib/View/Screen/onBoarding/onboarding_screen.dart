@@ -19,18 +19,49 @@ class OnBoardingScreen extends StatefulWidget {
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
   List<Map<String, dynamic>> lightModeImageList = [
-    {"id": 1, "image_path": "assets/images/onboarding1.svg", "text": "Invest like an\nexpert", "text2":"Smart, low-fee investing that automatically grows your money like the pro investors."},
-    {"id": 2, "image_path": "assets/images/onBoarding2.svg", "text": "Save for your \nfuture" , "text2":"Invest and grow your money for the long term."},
-    {"id": 3, "image_path": "assets/images/onBoarding3.svg", "text": "Smartest thing to\ndo with money", "text2":"We'll build you an intelligent, personalized portfolio using diversified, low-cost ETFs."},
+    {
+      "id": 1,
+      "image_path": "assets/images/onboarding1.svg",
+      "text": "Invest like an\nexpert",
+      "text2":
+          "Smart, low-fee investing that automatically grows your money like the pro investors."
+    },
+    {
+      "id": 2,
+      "image_path": "assets/images/onBoarding2.svg",
+      "text": "Save for your \nfuture",
+      "text2": "Invest and grow your money for the long term."
+    },
+    {
+      "id": 3,
+      "image_path": "assets/images/onBoarding3.svg",
+      "text": "Smartest thing to\ndo with money",
+      "text2":
+          "We'll build you an intelligent, personalized portfolio using diversified, low-cost ETFs."
+    },
   ];
   List<Map<String, dynamic>> darkModeImageList = [
-    {"id": 1, "image_path": "assets/images/darkOnBoarding1.svg", "text": "Invest like an\nexpert", "text2":"Smart, low-fee investing that automatically grows your money like the pro investors."},
-    {"id": 2, "image_path": "assets/images/darkOnboarding2.svg", "text": "Save for your \nfuture" , "text2":"Invest and grow your money for the long term."},
-    {"id": 3, "image_path": "assets/images/darkOnBoarding3.svg", "text": "Smartest thing to\ndo with money", "text2":"We'll build you an intelligent, personalized portfolio using diversified, low-cost ETFs."},
+    {
+      "id": 1,
+      "image_path": "assets/images/darkOnBoarding1.svg",
+      "text": "Invest like an\nexpert",
+      "text2":
+          "Smart, low-fee investing that automatically grows your money like the pro investors."
+    },
+    {
+      "id": 2,
+      "image_path": "assets/images/darkOnboarding2.svg",
+      "text": "Save for your \nfuture",
+      "text2": "Invest and grow your money for the long term."
+    },
+    {
+      "id": 3,
+      "image_path": "assets/images/darkOnBoarding3.svg",
+      "text": "Smartest thing to\ndo with money",
+      "text2":
+          "We'll build you an intelligent, personalized portfolio using diversified, low-cost ETFs."
+    },
   ];
-
-
-
 
   final CarouselController carouselController = CarouselController();
   int currentIndex = 0;
@@ -43,24 +74,30 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     imageList = isDarkMode ? darkModeImageList : lightModeImageList;
     return Scaffold(
-      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
+      backgroundColor:
+          isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(
         child: Padding(
-          padding:  EdgeInsets.only(left: 15.w,right: 15.w),
+          padding: EdgeInsets.only(left: 15.w, right: 15.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 30.h,),
+              SizedBox(
+                height: 30.h,
+              ),
               Text(
                 imageList[currentIndex]["text"],
                 style: TextStyle(
                   fontSize: 40.sp,
                   fontWeight: FontWeight.w700,
-                  color: isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
+                  color:
+                      isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 ),
               ),
-                SizedBox(height: 30.h,),
+              SizedBox(
+                height: 30.h,
+              ),
               Text(
                 imageList[currentIndex]["text2"],
                 style: TextStyle(
@@ -69,7 +106,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   color: isDarkMode ? Palette.baseGreyWhite : Palette.baseGrey,
                 ),
               ),
-            SizedBox(height: 70.h,),
+              SizedBox(
+                height: 70.h,
+              ),
               CarouselSlider(
                 items: imageList.map((item) {
                   return Builder(
@@ -77,7 +116,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       return SvgPicture.asset(
                         item["image_path"],
                         semanticsLabel: "ACME logo",
-                        height:299.h ,
+                        height: 299.h,
                         width: 300.w,
                       );
                     },
@@ -96,7 +135,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   },
                 ),
               ),
-            SizedBox(height: 30.h,),
+              SizedBox(
+                height: 30.h,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: imageList.asMap().entries.map((entry) {
@@ -118,42 +159,69 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               ),
               Spacer(),
               GestureDetector(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>EmailAddressScreen()));
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EmailAddressScreen()));
                 },
                 child: Center(
                   child: Container(
                     height: 56.h,
                     width: 304.w,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(25),
                       color: Palette.blue,
                     ),
                     child: Center(
-                      child: Text("Become an Investor",style: TextStyle(
-                        color: isDarkMode ? Palette.darkWhite : Palette.baseWhite,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18.sp,
-                      ),),
+                      child: Text(
+                        "Become an Investor",
+                        style: TextStyle(
+                          color: isDarkMode
+                              ? Palette.darkWhite
+                              : Palette.baseWhite,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.sp,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
-          SizedBox(height: 30.h,),
+              SizedBox(
+                height: 8.h,
+              ),
               Center(
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>EmailAddressScreen()));
-                  },
-                  child: Text("Sign In",style: TextStyle(
-                    color: Palette.blue,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18.sp,
-                  ),),
+                child: SizedBox(
+                  width: 304.w,
+                  height: 56.h,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EmailAddressScreen()));
+                    },
+                    child: Text(
+                      "Sign In",
+                      style: TextStyle(color: Palette.blue),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: isDarkMode
+                          ? Palette.darkBackground
+                          : Color(0xffF8F8F8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        side: BorderSide(color: Palette.blue),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              SizedBox(height: 80.h,),
-                ],
+              SizedBox(
+                height: 80.h,
+              ),
+            ],
           ),
         ),
       ),

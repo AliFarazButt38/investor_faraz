@@ -1,16 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:investor_flutter/View/Screen/complete_your_profile/complete_profileScreen.dart';
 import '../View/Screen/bottom_navigation/bottom_navigation.dart';
 import '../View/Screen/emailAndPhone/choose_password_screen.dart';
 import '../View/Screen/emailAndPhone/email_verifiedScreen.dart';
 import '../View/Screen/emailAndPhone/login_accountScreen.dart';
 
-class AuthService{
-
+class AuthService {
   static Future<void> fetchEmail(String email, BuildContext context) async {
-
     try {
-      var signInMethods = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      var signInMethods =
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
       if (signInMethods.isNotEmpty) {
         showDialog(
           context: context,
@@ -47,14 +47,14 @@ class AuthService{
               ),
             ],
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0), // Customize the border radius
+              borderRadius:
+                  BorderRadius.circular(16.0), // Customize the border radius
             ),
             backgroundColor: Colors.white, // Customize the background color
             elevation: 4.0, // Customize the elevation
           ),
         );
       } else {
-
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -63,13 +63,12 @@ class AuthService{
         );
       }
     } catch (e) {
-
       print('Error checking email existence: $e');
     }
   }
 
-  static Future<void> signUp(String userEmail, String password, String confirmPassword) async {
-
+  static Future<void> signUp(
+      String userEmail, String password, String confirmPassword) async {
     if (password.isEmpty || confirmPassword.isEmpty) {
       throw Exception("Password fields cannot be empty.");
     } else if (password.length < 6) {
@@ -78,15 +77,14 @@ class AuthService{
       throw Exception("Passwords do not match. Please try again.");
     } else {
       try {
-        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: userEmail,
           password: password,
         );
 
         await userCredential.user!.sendEmailVerification();
-
       } catch (e) {
-
         print('Failed to create account: ${e.toString()}');
 
         throw Exception("Failed to create account. Please try again.");
@@ -96,28 +94,28 @@ class AuthService{
 
   static Future<void> verifyEmail(BuildContext context) async {
     try {
-
       await FirebaseAuth.instance.currentUser!.reload();
 
       if (FirebaseAuth.instance.currentUser!.emailVerified) {
-
-        Navigator.push(context, MaterialPageRoute(builder: (context) => EmailVerifiedScreen()));
-
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EmailVerifiedScreen()));
 
         Future.delayed(Duration(seconds: 3), () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginToAccountScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => LoginToAccountScreen()));
         });
       } else {
-
         print('Email not verified yet');
       }
     } catch (e) {
-
       print('Failed to verify email: ${e.toString()}');
     }
   }
 
-  static Future<String?> login(BuildContext context, TextEditingController emailController, TextEditingController passwordController) async {
+  static Future<String?> login(
+      BuildContext context,
+      TextEditingController emailController,
+      TextEditingController passwordController) async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
@@ -126,11 +124,12 @@ class AuthService{
     }
 
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => NavigationBottom()),
+        MaterialPageRoute(builder: (context) => CompleteYourProfile()),
       );
       return null;
     } catch (error) {
@@ -145,15 +144,13 @@ class AuthService{
     try {
       await FirebaseAuth.instance.signOut();
 
-
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => LoginToAccountScreen()),
-            (Route<dynamic> route) => false,
+        (Route<dynamic> route) => false,
       );
     } catch (e) {
       print("Error signing out: ${e.toString()}");
     }
   }
-
 }
