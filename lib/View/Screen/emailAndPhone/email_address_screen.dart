@@ -6,11 +6,14 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:investor_flutter/View/Screen/emailAndPhone/choose_password_screen.dart';
 import 'package:investor_flutter/View/Screen/emailAndPhone/phone_otpScreen.dart';
 import 'package:provider/provider.dart';
-
+import '../../../Auth/auth_Service.dart';
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 
 class EmailAddressScreen extends StatefulWidget {
+
+
+  static String verify="";
   @override
   _EmailAddressScreenState createState() => _EmailAddressScreenState();
 }
@@ -23,75 +26,22 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
   String mob_number = '';
   bool isPhoneNumberEntered = false;
   bool isCheckingEmail = false;
-
+  String? selectedCountry = 'US';
+  String? errorMessage;
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
-  void continueButtonPressed() async {
+
+
+  void checkEmail() async {
     if (isEmailValid) {
       setState(() {
         isCheckingEmail = true;
       });
 
       try {
-        var signInMethods = await FirebaseAuth.instance.fetchSignInMethodsForEmail(emailController.text);
-        if (signInMethods.isNotEmpty) {
-          // Email already exists, show dialog
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text(
-                'Email Already Exists',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.red, // Customize the text color
-                ),
-              ),
-              content: Text(
-                'The email address is already registered.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black, // Customize the text color
-                ),
-              ),
-              actions: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.blue, // Customize the button color
-                  ),
-                  child: Text(
-                    'OK',
-                    style: TextStyle(
-                      color: Colors.white, // Customize the text color
-                    ),
-                  ),
-                ),
-              ],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0), // Customize the border radius
-              ),
-              backgroundColor: Colors.white, // Customize the background color
-              elevation: 4.0, // Customize the elevation
-            ),
-          );
-        } else {
-          // Email does not exist, move to the next screen (ChoosePasswordScreen)
-          String userEmail = emailController.text;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChoosePasswordScreen(userEmail: userEmail),
-            ),
-          );
-        }
-      } catch (e) {
-        // Handle any error that may occur during email existence check
-        print('Error checking email existence: $e');
+        await AuthService.fetchEmail(emailController.text, context); // Call the AuthService method
       } finally {
         setState(() {
           isCheckingEmail = false;
@@ -101,12 +51,22 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
   }
 
   @override
+  void initState(){
+    phoneController.text;
+    super.initState();
+
+  }
+
+
+
+
+  @override
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
-backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
+      backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -219,112 +179,93 @@ backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
 
               SizedBox(height: 40.h),
               Form(
-                    key: _formKey,
+                  key: _formKey,
                   child: Column(
-                children: [
-                  if (isEmailSelected)
-                    Column(
-                      children: [
-                        Container(
-                          height: 80.h,
-                          width: 368.w,
-                          child: Stack(
-                            children: [
-                              TextFormField(
-                                controller: emailController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    isEmailValid = value.isNotEmpty && value.contains('@');
-                                  });
-                                },
-                                decoration: InputDecoration(
-                                  labelText: "Email Address",
-                                  labelStyle: TextStyle(
-                                    color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
-                                    fontSize: 17.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  hintText: "example@gmail.com",
-                                  hintStyle: TextStyle(
-                                    color: isDarkMode ? Palette.hintText : Palette.baseGrey,
-                                    fontSize: 17.sp,
-                                    fontWeight: FontWeight.w400,
+                    children: [
+                      if (isEmailSelected)
+                        Column(
+                          children: [
+                            Container(
+                              height: 80.h,
+                              width: 368.w,
+                              child: Stack(
+                                children: [
+                                  TextFormField(
+                                    controller: emailController,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        isEmailValid = value.isNotEmpty && value.contains('@');
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      labelText: "Email Address",
+                                      labelStyle: TextStyle(
+                                        color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
+                                        fontSize: 17.sp,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      hintText: "example@gmail.com",
+                                      hintStyle: TextStyle(
+                                        color: isDarkMode ? Palette.hintText : Palette.baseGrey,
+                                        fontSize: 17.sp,
+                                        fontWeight: FontWeight.w400,
 
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: isEmailValid ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.blueSides),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: isEmailValid ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.blueSides),
+                                        ),
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: isEmailValid ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.blueSides),
+                                        ),
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                      filled: true,
+                                      fillColor: isDarkMode ? Palette.filledTextField : Palette.textFieldBlue,
                                     ),
-                                    borderRadius: BorderRadius.circular(8.0),
                                   ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: isEmailValid ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.blueSides),
+                                  if (isEmailValid)
+                                    Positioned(
+                                      right: 8.0,
+                                      top: 20,
+                                      child: SvgPicture.asset("assets/icons/check.svg",
+                                        height:20.73.h ,
+                                        width: 20.73.w,
+
+                                      ),
                                     ),
-                                    borderRadius: BorderRadius.circular(8.0),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 30.h),
+                            SizedBox(
+                              width: 304.w,
+                              height: 56.h,
+                              child: ElevatedButton(
+                                onPressed: isCheckingEmail ? null : (isEmailValid ? checkEmail : null),
+                                child: isCheckingEmail
+                                    ? CircularProgressIndicator(color: Colors.white)
+                                    : Text(
+                                  "Continue",
+                                  style: TextStyle(color: Palette.baseWhite, fontSize: 18.sp, fontWeight: FontWeight.w700),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  primary: isEmailValid ? Palette.blue : Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25.0),
                                   ),
-                                  filled: true,
-                                  fillColor: isDarkMode ? Palette.filledTextField : Palette.textFieldBlue,
                                 ),
                               ),
-                              if (isEmailValid)
-                                Positioned(
-                                  right: 8.0,
-                                  top: 20,
-                                  child: SvgPicture.asset("assets/icons/check.svg",
-                                    height:20.73.h ,
-                                    width: 20.73.w,
+                            ),
 
-                                  ),
-                                ),
-                            ],
-                          ),
+                          ],
                         ),
-
-                        SizedBox(height: 50.h),
-                        SizedBox(
-                          width: 304.w,
-                          height: 56.h,
-                          child: ElevatedButton(
-                            onPressed: isCheckingEmail ? null : (isEmailValid ? continueButtonPressed : null),
-                            child: isCheckingEmail
-                                ? CircularProgressIndicator(color: Colors.white)
-                                : Text(
-                              "Continue",
-                              style: TextStyle(color: Palette.baseWhite, fontSize: 18.sp, fontWeight: FontWeight.w700),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              primary: isEmailValid ? Palette.blue : Colors.grey,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 20.h),
-                        SizedBox(
-                          width: 304.w,
-                          height: 56.h,
-                          child: ElevatedButton(
-                            onPressed: continueButtonPressed,
-                            child: Text(
-                              "Sign In",
-                              style: TextStyle(color: Palette.blue),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              primary: isDarkMode ? Palette.darkBackground : Color(0xffF8F8F8),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                side: BorderSide(color: Palette.blue),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
-              )),
+                    ],
+                  )),
               if (isPhoneSelected)
                 Column(
                   children: [
@@ -343,17 +284,38 @@ backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
                         padding:  EdgeInsets.only(left: 10.w),
                         child: InternationalPhoneNumberInput(
                           selectorConfig: SelectorConfig(
-                            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                            selectorType: PhoneInputSelectorType.DIALOG,
                             showFlags: false,
+                            trailingSpace: false,
                           ),
                           formatInput: true,
+                          // Hide the country selector text
+                          initialValue: PhoneNumber(isoCode: selectedCountry),
+                          countries: ['US'],
                           // initialValue: PhoneNumber(isoCode: 'US'),
                           onInputChanged: (PhoneNumber number) {
                             print(number.phoneNumber);
-                            mob_number = number.phoneNumber.toString();
+                            mob_number = number.phoneNumber!.replaceAll(RegExp(r'[^0-9]'), '');
                             isPhoneNumberEntered = number.phoneNumber!.isNotEmpty;
+                            // if (mob_number.length > 10) {
+                            //   // Show error message
+                            //   // You can use a SnackBar or any other method to display the error message to the user
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //       SnackBar(content: Text('Phone number should contain exactly 10 digits')));
+                            // }
+                            if (mob_number.length != 10) {
+                              setState(() {
+                                // Update the error message
+                                errorMessage = 'Phone number should contain exactly 10 digits';
+                              });
+                            } else {
+                              setState(() {
+                                // Clear the error message
+                                errorMessage = null;
+                              });
+                            }
                           },
-                          errorMessage: 'Invalid phone number',
+                          errorMessage: errorMessage,
                           hintText: 'Phone number',
 
                           inputDecoration: InputDecoration(
@@ -365,6 +327,7 @@ backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
 
                             ),
                           ),
+
                           onInputValidated: (bool value) {},
                           onSaved: (PhoneNumber value) {
                             print('Number saved: ${value.phoneNumber}');
@@ -378,15 +341,39 @@ backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
                         ),
                       ),
                     ),
-                    SizedBox(height: 50.h),
+                    SizedBox(height: 10.h),
+                    if (errorMessage != null)
+                      Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text(
+                          errorMessage!,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    SizedBox(height: 30.h),
                     SizedBox(
                       width: 304.w,
                       height: 56.h,
                       child: ElevatedButton(
-                        onPressed: isPhoneNumberEntered ? () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneOtpScreen()));
-                          // Handle send OTP button press here
-                        }:null,
+                        // onPressed: isPhoneNumberEntered ? () {
+                        //   Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneOtpScreen()));
+                        //   // Handle send OTP button press here
+                        // }:null,
+                        onPressed: ()async{
+                          String countryCode = phoneController.text.startsWith('+') ? phoneController.text : '+${phoneController.text}';
+                          String phoneNumber = mob_number;
+                          String fullPhoneNumber = '$countryCode$phoneNumber';
+                          await FirebaseAuth.instance.verifyPhoneNumber(
+                            phoneNumber: fullPhoneNumber,
+                            verificationCompleted: (PhoneAuthCredential credential) {},
+                            verificationFailed: (FirebaseAuthException e) {},
+                            codeSent: (String verificationId , int? resendToken) {
+                              EmailAddressScreen.verify=verificationId;
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneOtpScreen()));
+                            },
+                            codeAutoRetrievalTimeout: (String verificationId ) {},
+                          );
+                        },
                         child: Text(
                           "Send OTP",
                           style: TextStyle(color: Colors.white),
@@ -400,26 +387,7 @@ backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
                       ),
                     ),
                     SizedBox(height: 20.h),
-                    SizedBox(
-                      width: 304.w,
-                      height: 56.h,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Handle sign in button press here
-                        },
-                        child: Text(
-                          "Sign In",
-                          style: TextStyle(color: Palette.blue),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          primary: isDarkMode ? Palette.darkBackground : Color(0xffF8F8F8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            side: BorderSide(color: Palette.blue),
-                          ),
-                        ),
-                      ),
-                    ),
+
                   ],
                 ),
             ],
