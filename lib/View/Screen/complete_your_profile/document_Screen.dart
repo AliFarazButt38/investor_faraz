@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
+import 'camera.dart';
 
 class DocumentScreen extends StatefulWidget {
   const DocumentScreen({Key? key}) : super(key: key);
@@ -98,7 +99,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => NavigationBottom()));
+                            builder: (context) => UploadCard()));
                   },
                   child: Text(
                     "Driver's License",
@@ -129,7 +130,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => NavigationBottom()));
+                            builder: (context) => UploadCard()));
                   },
                   child: Text(
                     "Social Security Card",

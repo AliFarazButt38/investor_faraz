@@ -1,69 +1,144 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:investor_flutter/View/Screen/complete_your_profile/complete_profileScreen.dart';
+import 'package:investor_flutter/View/Screen/home_screens/dashboard_screen.dart';
 import '../View/Screen/bottom_navigation/bottom_navigation.dart';
 import '../View/Screen/emailAndPhone/choose_password_screen.dart';
 import '../View/Screen/emailAndPhone/email_verifiedScreen.dart';
 import '../View/Screen/emailAndPhone/login_accountScreen.dart';
 
 class AuthService {
+
   static Future<void> fetchEmail(String email, BuildContext context) async {
+    // try {
+       print('email $email');
+    //   var signInMethods =
+    //       await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+    //   print('signinMethods ${signInMethods}');
+    //   if (signInMethods.isNotEmpty) {
+    //     showDialog(
+    //       context: context,
+    //       builder: (context) => AlertDialog(
+    //         title: Text(
+    //           'Email Already Exists',
+    //           style: TextStyle(
+    //             fontWeight: FontWeight.bold,
+    //             fontSize: 20,
+    //             color: Colors.red, // Customize the text color
+    //           ),
+    //         ),
+    //         content: Text(
+    //           'The email address is already registered.',
+    //           style: TextStyle(
+    //             fontSize: 16,
+    //             color: Colors.black, // Customize the text color
+    //           ),
+    //         ),
+    //         actions: <Widget>[
+    //           ElevatedButton(
+    //             onPressed: () {
+    //               Navigator.pop(context);
+    //             },
+    //             style: ElevatedButton.styleFrom(
+    //               primary: Colors.blue, // Customize the button color
+    //             ),
+    //             child: Text(
+    //               'OK',
+    //               style: TextStyle(
+    //                 color: Colors.white, // Customize the text color
+    //               ),
+    //             ),
+    //           ),
+    //         ],
+    //         shape: RoundedRectangleBorder(
+    //           borderRadius:
+    //               BorderRadius.circular(16.0), // Customize the border radius
+    //         ),
+    //         backgroundColor: Colors.white, // Customize the background color
+    //         elevation: 4.0, // Customize the elevation
+    //       ),
+    //     );
+    //   } else {
+    //     Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //         builder: (context) => ChoosePasswordScreen(userEmail: email),
+    //       ),
+    //     );
+    //   }
+    // } catch (e) {
+    //   print('Error checking email existence: $e');
+    // }
     try {
-      var signInMethods =
-          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
-      if (signInMethods.isNotEmpty) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(
-              'Email Already Exists',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Colors.red, // Customize the text color
-              ),
-            ),
-            content: Text(
-              'The email address is already registered.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black, // Customize the text color
-              ),
-            ),
-            actions: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue, // Customize the button color
-                ),
-                child: Text(
-                  'OK',
-                  style: TextStyle(
-                    color: Colors.white, // Customize the text color
-                  ),
-                ),
-              ),
-            ],
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(16.0), // Customize the border radius
-            ),
-            backgroundColor: Colors.white, // Customize the background color
-            elevation: 4.0, // Customize the elevation
-          ),
-        );
-      } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChoosePasswordScreen(userEmail: email),
-          ),
-        );
+      final signInMethods =
+      await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      print('singing method $signInMethods');
+      final userExists = signInMethods.isNotEmpty;
+      print('user exist $userExists');
+
+      final canSignInWithLink = signInMethods
+          .contains(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD);
+      final canSignInWithPassword = signInMethods
+          .contains(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD);
+      // if(userExists == true){
+      //   showDialog(
+      //     context: context,
+      //     builder: (context) => AlertDialog(
+      //       title: Text(
+      //         'Email Already Exists',
+      //         style: TextStyle(
+      //           fontWeight: FontWeight.bold,
+      //           fontSize: 20,
+      //           color: Colors.red, // Customize the text color
+      //         ),
+      //       ),
+      //       content: Text(
+      //         'The email address is already registered.',
+      //         style: TextStyle(
+      //           fontSize: 16,
+      //           color: Colors.black, // Customize the text color
+      //         ),
+      //       ),
+      //       actions: <Widget>[
+      //         ElevatedButton(
+      //           onPressed: () {
+      //             Navigator.pop(context);
+      //           },
+      //           style: ElevatedButton.styleFrom(
+      //             primary: Colors.blue, // Customize the button color
+      //           ),
+      //           child: Text(
+      //             'OK',
+      //             style: TextStyle(
+      //               color: Colors.white, // Customize the text color
+      //             ),
+      //           ),
+      //         ),
+      //       ],
+      //       shape: RoundedRectangleBorder(
+      //         borderRadius:
+      //         BorderRadius.circular(16.0), // Customize the border radius
+      //       ),
+      //       backgroundColor: Colors.white, // Customize the background color
+      //       elevation: 4.0, // Customize the elevation
+      //     ),
+      //   );
+      // }else{
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => ChoosePasswordScreen(userEmail: email),
+      //     ),
+      //   );
+      // }
+    } on FirebaseAuthException catch (exception) {
+      switch (exception.code) {
+        case "invalid-email":
+          print("Not a valid email address.");
+          break;
+        default:
+          print("Unknown error. $exception");
       }
-    } catch (e) {
-      print('Error checking email existence: $e');
     }
   }
 
@@ -87,7 +162,7 @@ class AuthService {
       } catch (e) {
         print('Failed to create account: ${e.toString()}');
 
-        throw Exception("Failed to create account. Please try again.");
+        throw Exception("${e.toString()}");
       }
     }
   }
@@ -126,11 +201,9 @@ class AuthService {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => NavigationBottom()), (route) => false);
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CompleteYourProfile()),
-      );
+
       return null;
     } catch (error) {
       // Handle login errors here

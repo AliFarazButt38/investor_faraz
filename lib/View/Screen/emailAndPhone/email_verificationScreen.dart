@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,11 +15,34 @@ import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
+  String email;
+  EmailVerificationScreen({required this.email});
   @override
   _EmailVerificationScreenState createState() => _EmailVerificationScreenState();
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+
+  bool isEmailVerified = false;
+  Timer? timer;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseAuth.instance.currentUser?.sendEmailVerification();
+    timer =
+        Timer.periodic(const Duration(seconds: 3), (_) => verifyEmail());
+  }
+
+
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    timer?.cancel();
+    super.dispose();
+  }
 
   Future<void> verifyEmail() async {
     try {
@@ -26,10 +51,13 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
       if (FirebaseAuth.instance.currentUser!.emailVerified) {
         // Email is verified, move to the CompleteYourProfileScreen
+        timer?.cancel();
         Navigator.push(context, MaterialPageRoute(builder: (context) => EmailVerifiedScreen()));
 
         Future.delayed(Duration(seconds: 3), () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginToAccountScreen()));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CompleteYourProfile()), (route) => false);
+      //    Navigator.push(context, MaterialPageRoute(builder: (context) => CompleteYourProfile()));
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginToAccountScreen()));
         });
       } else {
         // Show an error message or perform appropriate action if email is not verified
@@ -41,10 +69,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     }
   }
 
-  int otp1=0;
-  int otp2=0;
-  int otp3=0;
-  int otp4=0;
+
   @override
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
@@ -82,171 +107,46 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             ),
           ),
               SizedBox(height: 50.h,),
-              Text("Enter code",style: TextStyle(
+              Text("Check your Email",style: TextStyle(
                 color: isDarkMode ? Palette.hintText : Palette.baseElementDark,
                 fontSize: 17.sp,
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w700,
               ),),
-              SizedBox(height: 30.h,),
-              Padding(
-                padding: EdgeInsets.only(left: 40.w,right: 40.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      height: 56.h,
-                      width: 56.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isDarkMode? Palette.hintText : Palette.blueSides,
-                        ),
-                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
-                      ),
-                      child: TextFormField(
-
-                        onChanged: (value) {
-                          if (value.length == 1) {
-                            setState(() {
-                              otp1 = int.parse(value);
-                            });
-                            FocusScope.of(context).nextFocus();
-                          }
-                        },
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(1),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        style:  TextStyle(fontSize: 20.55.sp,),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue, width: 1),                          ),
-                        ),// optional styling for the text inside
-                      ),
-                    ),
-                    Container(
-                      height: 56.h,
-                      width: 56.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isDarkMode? Palette.hintText : Palette.blueSides,
-                        ),
-                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
-                      ),
-                      child: TextFormField(
-
-                        onChanged: (value) {
-                          if (value.length == 1) {
-                            setState(() {
-                              otp2 = int.parse(value);
-                            });
-                            FocusScope.of(context).nextFocus();
-                          }
-                        },
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(1),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        style:  TextStyle(fontSize: 20.55.sp,),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue,
-
-                                width: 1),                          ),
-                        ),// optional styling for the text inside
-                      ),
-                    ),
-                    Container(
-                      height: 56.h,
-                      width: 56.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isDarkMode? Palette.hintText : Palette.blueSides,
-                        ),
-                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
-                      ),
-                      child: TextFormField(
-
-                        onChanged: (value) {
-                          if (value.length == 1) {
-                            setState(() {
-                              otp3 = int.parse(value);
-                            });
-                            FocusScope.of(context).nextFocus();
-                          }
-                        },
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(1),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        style:  TextStyle(fontSize: 20.55.sp,),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue,
-                                width: 1),                          ),
-                        ),// optional styling for the text inside
-                      ),
-                    ),
-                    Container(
-                      height: 56.h,
-                      width: 56.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isDarkMode? Palette.hintText : Palette.blueSides,
-                        ),
-                        color: isDarkMode ? Palette.filledTextField :  Palette.textFieldBlue, // light orange color
-                      ),
-                      child: TextFormField(
-
-                        onChanged: (value) {
-                          if (value.length == 1) {
-                            setState(() {
-                              otp4 = int.parse(value) ;
-                            });
-                            FocusScope.of(context).nextFocus();
-                          }
-                        },
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(1),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        style:  TextStyle(fontSize: 20.55.sp,),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color:  isDarkMode ? Colors.transparent :Palette.blue,
-
-                                width: 1),
-                          ),
-                        ),// optional styling for the text inside
-                      ),
-                    ),
-
-                  ],
+              SizedBox(height: 10.h,),
+              SizedBox(
+                width: 428.w,
+                child: Center(
+                  child: Text("We have sent you a Email on ${widget.email}",style: TextStyle(
+                    color: isDarkMode ? Palette.hintText : Palette.baseElementDark,
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.w400,
+                  ),textAlign: TextAlign.center,),
                 ),
               ),
+              // SizedBox(height: 30.h,),
+              // const Center(child: CircularProgressIndicator()),
+              // const SizedBox(height: 8),
+              //
+              // const Padding(
+              //   padding: EdgeInsets
+              //       .symmetric(horizontal: 32.0),
+              //   child: Center(
+              //     child: Text(
+              //       'Verifying email....',
+              //       textAlign: TextAlign.center,
+              //     ),
+              //   ),
+              // ),
               SizedBox(height: 60.h,),
               SizedBox(
                 width: 304.w,
                 height: 56.h,
                 child: ElevatedButton(
-                  onPressed: verifyEmail,
+                  onPressed: () async {
+                    await FirebaseAuth.instance.currentUser?.sendEmailVerification();
+                  },
                   child: Text(
-                    "Submit",
+                    "Resend",
                     style: TextStyle(color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(

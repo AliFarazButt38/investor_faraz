@@ -27,7 +27,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
   String mob_number = '';
   bool isPhoneNumberEntered = false;
   bool isCheckingEmail = false;
-  String? selectedCountry = 'US';
+  String? selectedCountry = 'PK';
   String? errorMessage;
 
 
@@ -44,7 +44,13 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
       });
 
       try {
-        await AuthService.fetchEmail(emailController.text, context); // Call the AuthService method
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChoosePasswordScreen(userEmail: emailController.text),
+          ),
+        );
+       // await AuthService.fetchEmail(emailController.text, context); // Call the AuthService method
       } finally {
         setState(() {
           isCheckingEmail = false;
@@ -206,7 +212,8 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                                     controller: emailController,
                                     onChanged: (value) {
                                       setState(() {
-                                        isEmailValid = value.isNotEmpty && value.contains('@');
+                                        isEmailValid =   RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                            .hasMatch(emailController.text);
                                       });
                                     },
                                     decoration: InputDecoration(
@@ -303,7 +310,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                           formatInput: true,
                           // Hide the country selector text
                           initialValue: PhoneNumber(isoCode: selectedCountry),
-                          countries: ['US'],
+                          countries: ['PK'],
                           // initialValue: PhoneNumber(isoCode: 'US'),
                           onInputChanged: (PhoneNumber number) {
                             print(number.phoneNumber);
@@ -315,7 +322,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                             //   ScaffoldMessenger.of(context).showSnackBar(
                             //       SnackBar(content: Text('Phone number should contain exactly 10 digits')));
                             // }
-                            if (mob_number.length != 11) {
+                            if (mob_number.length != 12) {
                               setState(() {
                                 // Update the error message
                                 errorMessage = 'Phone number should contain exactly 10 digits';
@@ -376,8 +383,10 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                           String phoneNumber = mob_number;
                           String fullPhoneNumber = '$countryCode$phoneNumber';
 
+                          print('phone number $fullPhoneNumber');
                           bool phoneExists = await checkIfPhoneExists(fullPhoneNumber);
 
+                          print('phoneexist $phoneExists');
                           if (phoneExists) {
                             // Show dialog if phone number already exists
                             showDialog(
@@ -405,7 +414,7 @@ class _EmailAddressScreenState extends State<EmailAddressScreen> {
                               verificationFailed: (FirebaseAuthException e) {},
                               codeSent: (String verificationId , int? resendToken) {
                                 EmailAddressScreen.verify = verificationId;
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneOtpScreen()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneOtpScreen(check: false,)));
                               },
                               codeAutoRetrievalTimeout: (String verificationId ) {},
                             );

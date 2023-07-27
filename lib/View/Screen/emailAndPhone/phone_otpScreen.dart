@@ -7,13 +7,15 @@ import 'package:investor_flutter/View/Screen/bottom_navigation/bottom_navigation
 import 'package:investor_flutter/View/Screen/complete_your_profile/complete_profileScreen.dart';
 import 'package:investor_flutter/View/Screen/emailAndPhone/email_address_screen.dart';
 import 'package:investor_flutter/View/Screen/emailAndPhone/login_accountScreen.dart';
+import 'package:investor_flutter/View/Screen/home_screens/dashboard_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 
 class PhoneOtpScreen extends StatefulWidget {
-
+bool check;
+PhoneOtpScreen({required this.check});
   @override
   _PhoneOtpScreenState createState() => _PhoneOtpScreenState();
 }
@@ -59,7 +61,13 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
       await auth.signInWithCredential(credential);
 
       // If the sign-in is successful, navigate to the desired screen
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CompleteYourProfile()));
+      if(widget.check == true){
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => NavigationBottom()), (route) => false);
+
+      }else{
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CompleteYourProfile()), (route) => false);
+      }
+
     } catch (e) {
       // Handle verification failure (e.g., wrong OTP entered)
       // Show an error dialogue with the error message
@@ -84,7 +92,11 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset("assets/icons/cross.png", height: 28.h, width: 28.w),
+                  InkWell(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child: Image.asset("assets/icons/cross.png", height: 28.h, width: 28.w)),
                   Padding(
                     padding:  EdgeInsets.only(right: 170.w),
                     child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h),
@@ -130,7 +142,9 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                             setState(() {
                               otp1 = int.parse(value);
                             });
-
+                            FocusScope.of(context).nextFocus();
+                          }else{
+                            FocusScope.of(context).previousFocus();
                           }
                         },
                         keyboardType: TextInputType.number,
@@ -164,7 +178,9 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                             setState(() {
                               otp2 = int.parse(value);
                             });
-
+                            FocusScope.of(context).nextFocus();
+                          }else{
+                            FocusScope.of(context).previousFocus();
                           }
                         },
                         keyboardType: TextInputType.number,
@@ -198,7 +214,9 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                             setState(() {
                               otp3 = int.parse(value);
                             });
-
+                            FocusScope.of(context).nextFocus();
+                          }else{
+                            FocusScope.of(context).previousFocus();
                           }
                         },
                         keyboardType: TextInputType.number,
@@ -232,7 +250,9 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                             setState(() {
                               otp4 = int.parse(value) ;
                             });
-
+                            FocusScope.of(context).nextFocus();
+                          }else{
+                            FocusScope.of(context).previousFocus();
                           }
                         },
                         keyboardType: TextInputType.number,
@@ -266,7 +286,9 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                             setState(() {
                               otp5 = int.parse(value) ;
                             });
-
+                            FocusScope.of(context).nextFocus();
+                          }else{
+                            FocusScope.of(context).previousFocus();
                           }
                         },
                         keyboardType: TextInputType.number,
@@ -300,7 +322,9 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
                             setState(() {
                               otp6 = int.parse(value) ;
                             });
-
+                            FocusScope.of(context).nextFocus();
+                          }else{
+                            FocusScope.of(context).previousFocus();
                           }
                         },
                         keyboardType: TextInputType.number,

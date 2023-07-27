@@ -22,12 +22,20 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       await FirebaseAuth.instance.signOut();
 
-      // Navigate to the LoginToAccountScreen and remove all previous routes
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => LoginToAccountScreen()),
-            (Route<dynamic> route) => false,
+      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return LoginToAccountScreen();
+          },
+        ),
+            (_) => false,
       );
+      // Navigate to the LoginToAccountScreen and remove all previous routes
+      // Navigator.pushAndRemoveUntil(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => LoginToAccountScreen()),
+      //       (Route<dynamic> route) => false,
+      // );
     } catch (e) {
       print("Error signing out: ${e.toString()}");
     }

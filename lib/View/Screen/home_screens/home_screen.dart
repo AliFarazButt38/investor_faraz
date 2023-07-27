@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:investor_flutter/View/Screen/home_screens/explore_investmentScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
@@ -46,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     for (var controller in chewieControllers) {
+      print('dispose');
       controller.dispose();
     }
     super.dispose();
@@ -383,28 +385,42 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(
                           height: 20.h,
                         ),
-                        SizedBox(
-                          height: 180.h,
-                          width: 344.w,
-                          child:    CarouselSlider(
-                            items: chewieControllers.map((chewieController) {
-                              return Builder(
-                                builder: (BuildContext context) {
-                                  return Chewie(controller: chewieController);
+                        VisibilityDetector(
+                          key: Key('someUniqueString'),
+                          onVisibilityChanged: (VisibilityInfo info) {
+                            if (info.visibleFraction == 0 && mounted) {
+                              //checks if the player is visible and it hasn't been disposed as yet(mounted) and
+                              //pause the chewie player, you could dispose here too');
+                              for (var controller in chewieControllers) {
+                                print('dispose');
+                                controller.pause();
+                              }
+
+                            }
+                          },
+                          child: SizedBox(
+                            height: 180.h,
+                            width: 344.w,
+                            child:    CarouselSlider(
+                              items: chewieControllers.map((chewieController) {
+                                return Builder(
+                                  builder: (BuildContext context) {
+                                    return Chewie(controller: chewieController);
+                                  },
+                                );
+                              }).toList(),
+                              carouselController: carouselController2,
+                              options: CarouselOptions(
+                                scrollPhysics: BouncingScrollPhysics(),
+                                autoPlay: false,
+                                aspectRatio: 16 / 9,
+                                viewportFraction: 1,
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    currentIndex2 = index;
+                                  });
                                 },
-                              );
-                            }).toList(),
-                            carouselController: carouselController2,
-                            options: CarouselOptions(
-                              scrollPhysics: BouncingScrollPhysics(),
-                              autoPlay: false,
-                              aspectRatio: 16 / 9,
-                              viewportFraction: 1,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  currentIndex2 = index;
-                                });
-                              },
+                              ),
                             ),
                           ),
                         ),

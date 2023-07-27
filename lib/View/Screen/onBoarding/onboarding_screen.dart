@@ -197,10 +197,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   height: 56.h,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EmailAddressScreen()));
+                     Navigator.push(context, MaterialPageRoute(builder: (context) => LoginToAccountScreen()));
                     },
                     child: Text(
                       "Sign In",

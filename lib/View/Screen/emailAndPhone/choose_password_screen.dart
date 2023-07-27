@@ -140,7 +140,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
           confirmPasswordController.text);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => EmailVerificationScreen()),
+        MaterialPageRoute(builder: (context) => EmailVerificationScreen(email: widget.userEmail,)),
       );
     } catch (e) {
       showErrorDialog(context, e.toString());
