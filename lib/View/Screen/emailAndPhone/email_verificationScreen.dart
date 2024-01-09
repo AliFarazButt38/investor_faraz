@@ -55,7 +55,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         Navigator.push(context, MaterialPageRoute(builder: (context) => EmailVerifiedScreen()));
 
         Future.delayed(Duration(seconds: 3), () {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CompleteYourProfile()), (route) => false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => NavigationBottom()), (route) => false);
       //    Navigator.push(context, MaterialPageRoute(builder: (context) => CompleteYourProfile()));
           //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginToAccountScreen()));
         });

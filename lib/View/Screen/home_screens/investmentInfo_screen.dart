@@ -3,6 +3,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:investor_flutter/Model/myInvestmenstModel.dart';
+import 'package:investor_flutter/Model/property_model.dart';
 import 'package:investor_flutter/View/Widget/line_chart.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +12,8 @@ import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 
 class InvestmentInfoScreen extends StatefulWidget {
-  const InvestmentInfoScreen({Key? key}) : super(key: key);
+  MyInvestmentModel investModel;
+  InvestmentInfoScreen({Key? key, required this.investModel}) : super(key: key);
 
   @override
   State<InvestmentInfoScreen> createState() => _InvestmentInfoScreenState();
@@ -145,7 +148,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                 height: 10.h,
               ),
               Text(
-                "1363 Hancock Street",
+                "${widget.investModel.street ?? ''} Street",
                 style: TextStyle(
                     color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                     fontSize: 24.sp,
@@ -155,7 +158,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                 height: 10.h,
               ),
               Text(
-                "Brooklyn, NY 11237",
+               " ${widget.investModel.country ?? ''} , ${widget.investModel.zipCode}",
                 style: TextStyle(
                   color:isDarkMode ? Palette.hintText : Palette.baseGrey,
                   fontSize: 18.sp,
@@ -167,7 +170,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
               ),
               Row(
                 children: [
-                  Text("\$2,865/month",style: TextStyle(
+                  Text("\$${widget.investModel.investPerMonth}/month",style: TextStyle(
                     color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w400,
@@ -183,7 +186,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                   ),
                   Padding(
                     padding:  EdgeInsets.only(left: 5.w),
-                    child: Text("Regional Bundle",style: TextStyle(
+                    child: Text("${widget.investModel.bundle} Bundle",style: TextStyle(
                       color:isDarkMode ? Palette.hintText : Palette.baseGrey,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w400,
@@ -200,7 +203,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                   ),
                   Padding(
                     padding:  EdgeInsets.only(left: 5.w),
-                    child: Text("12 units",style: TextStyle(
+                    child: Text("${widget.investModel.unit} units",style: TextStyle(
                       color:isDarkMode ? Palette.hintText : Palette.baseGrey,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w400,
@@ -456,7 +459,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                               ],
                             ),
                             Text(
-                              "\$13,000",
+                              "\$${widget.investModel.afterDevelopmentArc}",
                               style: TextStyle(
                                 color: Palette.blue,
                                 fontSize: 16.sp,
@@ -482,7 +485,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                               ),
                             ),
                             Text(
-                              "4.8%",
+                              "${widget.investModel.afterDevelopmentCapRate}%",
                               style: TextStyle(
                                 color: Palette.blue,
                                 fontSize: 16.sp,
@@ -507,7 +510,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                               ),
                             ),
                             Text(
-                              "2,600,000",
+                              "${widget.investModel.afterDevelopmentValue}",
                               style: TextStyle(
                                 color: Palette.blue,
                                 fontSize: 16.sp,
@@ -532,7 +535,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                               ),
                             ),
                             Text(
-                              "Q2/2026",
+                              "${widget.investModel.dispositionDate} ",
                               style: TextStyle(
                                 color: Palette.blue,
                                 fontSize: 16.sp,
@@ -583,7 +586,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w400,
                             ),),
-                            Text("\$490,000",style: TextStyle(
+                            Text("\$${widget.investModel.annualRentalCollection}",style: TextStyle(
                               color: Palette.blue,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
@@ -604,7 +607,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w400,
                             ),),
-                            Text("4.7%",style: TextStyle(
+                            Text("${widget.investModel.developmentCapRate}%",style: TextStyle(
                               color: Palette.blue,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
@@ -625,7 +628,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w400,
                             ),),
-                            Text("\$3,100,699",style: TextStyle(
+                            Text("\$${widget.investModel.afterDevelopmentValue}",style: TextStyle(
                               color: Palette.blue,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
@@ -646,7 +649,7 @@ class _InvestmentInfoScreenState extends State<InvestmentInfoScreen> {
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w400,
                             ),),
-                            Text("Apr 2/2017",style: TextStyle(
+                            Text(widget.investModel.dispositionDate,style: TextStyle(
                               color: Palette.blue,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,

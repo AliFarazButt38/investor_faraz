@@ -1,10 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:plaid_flutter/plaid_flutter.dart';
 import 'package:provider/provider.dart';
-
+import 'package:http/http.dart' as http;
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
+
 class ContainerData {
   final String image;
   final String text;
@@ -43,6 +48,89 @@ class TransactionScreen1 extends StatefulWidget {
 }
 
 class _TransactionScreen1State extends State<TransactionScreen1> {
+  Future<String> fetchLinkToken(String clientUserId) async {
+    final response = await http.post(
+      Uri.parse('https://sandbox.plaid.com/link/token/create'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Plaid-Client-ID': '64c8e897e39b6a00137acfff',
+        'Plaid-Secret': 'f347f202de237c8ed27aeba4b23d2f',
+
+      },
+      body: jsonEncode(<String, dynamic>{
+        "user": {"client_user_id": clientUserId},
+        'client_id': '64c8e897e39b6a00137acfff',
+        'secret': 'f347f202de237c8ed27aeba4b23d2f',
+        'client_name': 'Your App Name',
+        'products': ['transactions','auth'],
+        'country_codes': ['US'],
+        'language': 'en',
+      }),
+    );
+
+    if (response.statusCode == 200) {
+
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      print("Response body: ${response.body}");
+      return data['link_token'];
+    } else {
+      print('Error fetching link token: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to load link token');
+    }
+  }
+  LinkConfiguration? _configuration;
+  StreamSubscription<LinkEvent>? _streamEvent;
+  StreamSubscription<LinkExit>? _streamExit;
+  StreamSubscription<LinkSuccess>? _streamSuccess;
+  LinkObject? _successObject;
+  @override
+  void initState() {
+    super.initState();
+
+    _streamEvent = PlaidLink.onEvent.listen(_onEvent);
+    _streamExit = PlaidLink.onExit.listen(_onExit);
+    _streamSuccess = PlaidLink.onSuccess.listen(_onSuccess);
+  }
+
+  @override
+  void dispose() {
+    _streamEvent?.cancel();
+    _streamExit?.cancel();
+    _streamSuccess?.cancel();
+    super.dispose();
+  }
+
+  void _openPlaidLink() async {
+    final linkToken = await fetchLinkToken('64c8e897e39b6a00137acfff');
+    setState(() {
+      _configuration = LinkTokenConfiguration(
+        token: linkToken,
+      );
+    });
+
+    if (_configuration != null) {
+      PlaidLink.open(configuration: _configuration!);
+    }
+  }
+  void _onEvent(LinkEvent event) {
+    final name = event.name;
+    final metadata = event.metadata.description();
+    print("onEvent: $name, metadata: $metadata");
+  }
+
+  void _onSuccess(LinkSuccess event) {
+    final token = event.publicToken;
+    final metadata = event.metadata.description();
+    print("onSuccess: $token, metadata: $metadata");
+    setState(() => _successObject = event);
+  }
+
+  void _onExit(LinkExit event) {
+    final metadata = event.metadata.description();
+    final error = event.error?.description();
+    print("onExit metadata: $metadata, error: $error");
+  }
   @override
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
@@ -65,7 +153,9 @@ class _TransactionScreen1State extends State<TransactionScreen1> {
                   fontSize: 28.sp,
                   fontWeight: FontWeight.w700,
                 ),),
-                Image.asset("assets/icons/plus.png",height: 46.h,width: 46.w,),
+                GestureDetector(
+                    onTap: _openPlaidLink,
+                    child: Image.asset("assets/icons/plus.png",height: 46.h,width: 46.w,)),
               ],
             ),
             SizedBox(height: 10.h,),

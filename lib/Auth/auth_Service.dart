@@ -212,18 +212,17 @@ class AuthService {
       return "Incorrect email or password. Please try again.";
     }
   }
-
-  static Future<void> signOut(BuildContext context) async {
-    try {
-      await FirebaseAuth.instance.signOut();
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => LoginToAccountScreen()),
-        (Route<dynamic> route) => false,
-      );
-    } catch (e) {
-      print("Error signing out: ${e.toString()}");
-    }
-  }
+  // static Future<void> signOut(BuildContext context) async {
+  //   try {
+  //     await FirebaseAuth.instance.signOut();
+  //
+  //     Navigator.pushAndRemoveUntil(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => LoginToAccountScreen()),
+  //       (Route<dynamic> route) => false,
+  //     );
+  //   } catch (e) {
+  //     print("Error signing out: ${e.toString()}");
+  //   }
+  // }
 }

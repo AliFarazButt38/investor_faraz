@@ -1,12 +1,17 @@
+import 'dart:io';
+
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_camera_overlay/flutter_camera_overlay.dart';
+import 'package:flutter_camera_overlay/model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/View/Screen/bottom_navigation/bottom_navigation.dart';
+import 'package:investor_flutter/View/Screen/complete_your_profile/camera.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
-import 'camera.dart';
 
 class DocumentScreen extends StatefulWidget {
   const DocumentScreen({Key? key}) : super(key: key);
@@ -16,6 +21,7 @@ class DocumentScreen extends StatefulWidget {
 }
 
 class _DocumentScreenState extends State<DocumentScreen> {
+
   @override
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
@@ -23,11 +29,12 @@ class _DocumentScreenState extends State<DocumentScreen> {
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
       backgroundColor:
-          isDarkMode ? Palette.darkBackground : Palette.baseBackground,
+      isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 20.h,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -59,7 +66,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                   fontSize: 30.sp,
                   fontWeight: FontWeight.w700,
                   color:
-                      isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
+                  isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 ),
               ),
             ),
@@ -83,10 +90,10 @@ class _DocumentScreenState extends State<DocumentScreen> {
             Expanded(
                 child: Center(
                     child: SvgPicture.asset(
-              "assets/images/document.svg",
-              width: 188.w,
-              height: 168.h,
-            ))),
+                      "assets/images/document.svg",
+                      width: 188.w,
+                      height: 168.h,
+                    ))),
             SizedBox(
               height: 50.h,
             ),
@@ -95,11 +102,8 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 width: 304.w,
                 height: 56.h,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UploadCard()));
+                  onPressed: (){
+               Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadCard()));
                   },
                   child: Text(
                     "Driver's License",
@@ -126,11 +130,9 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 width: 304.w,
                 height: 56.h,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UploadCard()));
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadCard()));
+
                   },
                   child: Text(
                     "Social Security Card",
@@ -141,7 +143,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                   ),
                   style: ElevatedButton.styleFrom(
                     primary:
-                        isDarkMode ? Palette.darkBackground : Color(0xffF8F8F8),
+                    isDarkMode ? Palette.darkBackground : Color(0xffF8F8F8),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       side: BorderSide(color: Palette.blue),

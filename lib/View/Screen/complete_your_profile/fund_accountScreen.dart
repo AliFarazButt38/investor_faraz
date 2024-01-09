@@ -4,6 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/View/Screen/complete_your_profile/document_Screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Auth/firestore_auth.dart';
+import '../../../Provider/userProvider.dart';
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 class EmploymentStatus {
@@ -47,9 +49,6 @@ class FundAccountScreen extends StatefulWidget {
 }
 
 class _FundAccountScreenState extends State<FundAccountScreen> {
-  TextEditingController employerController = TextEditingController();
-  TextEditingController jobController = TextEditingController();
-  TextEditingController industryController = TextEditingController();
 
   List<EmploymentStatus> employmentStatusList = [
     EmploymentStatus(title: 'Income'),
@@ -93,6 +92,8 @@ class _FundAccountScreenState extends State<FundAccountScreen> {
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
+    final userPersonalInfoProvider = Provider.of<UserPersonalInfoProvider>(context);
+
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
       backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
@@ -143,7 +144,9 @@ class _FundAccountScreenState extends State<FundAccountScreen> {
                         }
                         status.isSelected = true;
                         selectedStatusIndex = index;
-                        employmentStatusCompleted = true;
+                        userPersonalInfoProvider.updateEmploymentStatusCompleted(status.title);
+
+
                       });
                     },
                     child: Container(
@@ -214,7 +217,7 @@ class _FundAccountScreenState extends State<FundAccountScreen> {
                         }
                         status.isSelected = true;
                         selectedIndex = index;
-                        accreditedInvestorCompleted = true;
+                        userPersonalInfoProvider.updateAccreditedInvestorCompleted(status.title);
                       });
                     },
                     child: Container(
@@ -254,12 +257,12 @@ class _FundAccountScreenState extends State<FundAccountScreen> {
                   );
                 },
               ),
-                   SizedBox(height: 5,),
-                   Text("Either way, you can still invest with Landa.",style: TextStyle(
-                     fontWeight: FontWeight.w400,
-                     fontSize: 15.sp,
-                     color:isDarkMode ? Palette.hintText : Palette.baseGrey,
-                   ),),
+              SizedBox(height: 5,),
+              Text("Either way, you can still invest with Landa.",style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 15.sp,
+                color:isDarkMode ? Palette.hintText : Palette.baseGrey,
+              ),),
               SizedBox(height: 20.h,),
               Text(
                 "What level of risk do you\nlike to take in your\ninvestments?",
@@ -284,7 +287,7 @@ class _FundAccountScreenState extends State<FundAccountScreen> {
                         }
                         status.isSelected = true;
                         selectedLevel = index;
-                        levelRiskCompleted=true;
+                        userPersonalInfoProvider.updateLevelRiskCompleted(status.title);
                       });
                     },
                     child: Container(
@@ -342,11 +345,11 @@ class _FundAccountScreenState extends State<FundAccountScreen> {
                     onTap: () {
                       setState(() {
                         if (employedStatus != -1) {
-                         employedList[employedStatus].isSelected = false;
+                          employedList[employedStatus].isSelected = false;
                         }
                         status.isSelected = true;
                         employedStatus = index;
-                         employedStatusCompleted = true;
+                        userPersonalInfoProvider.updateEmployedStatusCompleted(status.title);
 
                       });
                     },
@@ -399,10 +402,10 @@ class _FundAccountScreenState extends State<FundAccountScreen> {
               SizedBox(height: 20.h,),
               Text("Are you, or anyone with an interest in this\nrelationship,currently or formerly,either:\n1. A senior military,government,or political official,or\n2. An immediate family member or close\nassociate, either personally or professionally\nof a senior military, government, or political official? ",
                 style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 18.sp,
-                color: isDarkMode ? Palette.hintText : Palette.baseGrey,
-              ),),
+                  fontWeight: FontWeight.w400,
+                  fontSize: 18.sp,
+                  color: isDarkMode ? Palette.hintText : Palette.baseGrey,
+                ),),
               SizedBox(height: 10.h,),
               ListView.builder(
                 itemCount: politicalList.length,
@@ -418,7 +421,8 @@ class _FundAccountScreenState extends State<FundAccountScreen> {
                         }
                         status.isSelected = true;
                         politicalStatus = index;
-                         politicalStatusCompleted = true;
+                        userPersonalInfoProvider.updatePoliticalStatusCompleted(status.title);
+
                       });
                     },
                     child: Container(
@@ -464,12 +468,12 @@ class _FundAccountScreenState extends State<FundAccountScreen> {
                   width: 304.w,
                   height: 56.h,
                   child: ElevatedButton(
-                    onPressed: (){
-                      if (employmentStatusCompleted &&
-                          accreditedInvestorCompleted &&
-                          levelRiskCompleted &&
-                          employedStatusCompleted &&
-                          politicalStatusCompleted) {
+                    onPressed: () async{
+                      if (userPersonalInfoProvider.employmentStatusCompleted.isNotEmpty &&
+                          userPersonalInfoProvider.accreditedInvestorCompleted.isNotEmpty &&
+                          userPersonalInfoProvider.levelRiskCompleted.isNotEmpty &&
+                          userPersonalInfoProvider.employedStatusCompleted.isNotEmpty &&
+                          userPersonalInfoProvider.politicalStatusCompleted.isNotEmpty) {
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>DocumentScreen()));
                       } else {
                         // Show an error on a SnackBar

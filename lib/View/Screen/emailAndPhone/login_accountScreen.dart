@@ -472,7 +472,7 @@ class _LoginToAccountScreenState extends State<LoginToAccountScreen> {
       },
     );
   }
-//
+
   void login() async {
     setState(() {
       isCheckingLogin = true;
@@ -557,8 +557,6 @@ class _LoginToAccountScreenState extends State<LoginToAccountScreen> {
                     },
                     child: Column(
                       children: [
-
-
                         Row(
                           children: [
                             SvgPicture.asset("assets/icons/email.svg", color: isDarkMode ? (isEmailSelected ? Palette.blue : Colors.white) : (isEmailSelected ? Palette.blue : Palette.baseElementDark),
@@ -593,13 +591,10 @@ class _LoginToAccountScreenState extends State<LoginToAccountScreen> {
                     },
                     child: Column(
                       children: [
-
                         Row(
-
                           children: [
                             SvgPicture.asset("assets/icons/phone.svg",  color: isDarkMode ? (isPhoneSelected ? Palette.blue : Colors.white) : (isPhoneSelected ? Palette.blue : Palette.baseElementDark),
                             ),
-
                             Text(
                               "Phone",
                               style: TextStyle(

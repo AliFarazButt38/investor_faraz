@@ -34,16 +34,27 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
 
     _backgroundColorAnimation = ColorTween(
-      begin: isDarkMode ? Colors.black : Palette.lightBlue,
+      begin: isDarkMode ? Palette.darkBackground : Palette.lightBlue,
       end: Palette.blue,
     ).animate(_controller);
 
     _controller.addListener(() {
       if (_controller.isCompleted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => OnBoardingScreen()),
-        );
+        User? currentUser = FirebaseAuth.instance.currentUser;
+        print("user : $currentUser");
+        if (currentUser != null && currentUser.emailVerified) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => NavigationBottom()),
+                (Route<dynamic> route) => false,
+          );
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => OnBoardingScreen()),
+                (Route<dynamic> route) => false,
+          );
+        }
       }
     });
 
@@ -55,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     final themeManager = Provider.of<ThemeManager>(context);
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
 
-    Color backgroundColor = _backgroundColorAnimation.value ?? Palette.lightBlue;
+    Color backgroundColor = _backgroundColorAnimation.value ?? Palette.blue;
     Color logoColor = _backgroundColorAnimation.value == Palette.blue
         ? Colors.white
         : isDarkMode

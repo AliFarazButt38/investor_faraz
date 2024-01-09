@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:investor_flutter/Provider/userProvider.dart';
 import 'package:investor_flutter/Theme/Palette/palette.dart';
 import 'package:investor_flutter/Theme/theme_manager.dart';
 import 'package:investor_flutter/View/Screen/bank_Screens/transaction_screen1.dart';
@@ -41,7 +42,12 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<UserPersonalInfoProvider>(context,listen: false).getUserData();
+  }
 
 
   @override

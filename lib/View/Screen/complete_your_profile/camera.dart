@@ -6,6 +6,10 @@ import 'package:flutter_camera_overlay/model.dart';
 import 'package:investor_flutter/View/Screen/bottom_navigation/bottom_navigation.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Auth/firebaseStorage.dart';
+import '../../../Auth/firestore_auth.dart';
+import '../../../Provider/userProvider.dart';
+
 
 
 class UploadCard extends StatefulWidget {
@@ -20,7 +24,7 @@ class _UploadCardState extends State<UploadCard> {
   void _showLoadingDialog(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent closing the dialog on outside tap
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.black,
@@ -81,13 +85,13 @@ class _UploadCardState extends State<UploadCard> {
                                       child: const Icon(Icons.close)),
                                   ElevatedButton(
                                     onPressed: () async{
-                                     // var userPersonalInfoProvider = context.read<UserPersonalInfoProvider>();
-                                      //userPersonalInfoProvider.updateCapturedImage(File(file.path));
+                                     var userPersonalInfoProvider = context.read<UserPersonalInfoProvider>();
+                                      userPersonalInfoProvider.updateCapturedImage(File(file.path));
                                       _showLoadingDialog(context);
-                                     // String? imageUrl = await uploadImageToFirestore(File(file.path));
+                                     String? imageUrl = await uploadImageToFirestore(File(file.path));
                                       // Call saveDataToFirestore with the imageFile
-                                     // print("image url: $imageUrl");
-                                   //  await saveDataToFirestore(userPersonalInfoProvider, imageUrl, userPersonalInfoProvider.capturedImage);
+                                     print("image url: $imageUrl");
+                                    await saveDataToFirestore(userPersonalInfoProvider, imageUrl, userPersonalInfoProvider.capturedImage);
                                       Navigator.of(context).pop();
                                       Navigator.pushAndRemoveUntil(
                                         context,

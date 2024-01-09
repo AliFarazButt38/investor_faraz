@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
+import 'investContribution_screen2.dart';
 
 class InvestContributionScreen1 extends StatefulWidget {
   const InvestContributionScreen1({Key? key}) : super(key: key);
@@ -20,6 +21,7 @@ class _InvestContributionScreen1State extends State<InvestContributionScreen1> {
     final themeManager = Provider.of<ThemeManager>(context);
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
     ScreenUtil.init(context, designSize: const Size(428, 926));
+    double _value = 100;
     return Scaffold(
       backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(child:
@@ -117,14 +119,32 @@ class _InvestContributionScreen1State extends State<InvestContributionScreen1> {
                       SizedBox(
                         height: 10.h,
                       ),
-                      LinearPercentIndicator(
-                        barRadius: Radius.circular(15.0),
-                        animation: true,
-                        lineHeight: 3,
-                        percent: 0.6,
-                        progressColor: Palette.blue,
-                        backgroundColor: Color(0xff91C5FA),
+                      // LinearPercentIndicator(
+                      //   barRadius: Radius.circular(15.0),
+                      //   animation: true,
+                      //   lineHeight: 3,
+                      //   percent: 0.6,
+                      //   progressColor: Palette.blue,
+                      //   backgroundColor: Color(0xff91C5FA),
+                      // ),
+                      Container(
+                        width: double.infinity,
+                        height: 3.0,
+                        child: Slider(
+
+                          value: 0.6, // Set the initial value (percentage)
+                          onChanged: (double value) {
+                           setState(() {
+                             _value=value;
+                           });
+                          },
+                          activeColor: Palette.blue,
+                          // Set the filled portion color
+                          min: 0.5, // Minimum value
+                          max: 100.0, // Maximum value (corresponds to 100%)
+                        ),
                       ),
+
                       SizedBox(
                         height: 20.h,
                       ),
@@ -285,6 +305,10 @@ class _InvestContributionScreen1State extends State<InvestContributionScreen1> {
                 height: 56.h,
                 child: ElevatedButton(
                   onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => InvestContributionScreen2()));
                   },
                   child: Text(
                     "Confirm Investment Amount",

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:investor_flutter/View/Screen/complete_your_profile/complete_profileScreen.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -275,6 +276,15 @@ class _InvestContributionScreen2State extends State<InvestContributionScreen2> {
                 height: 56.h,
                 child: ElevatedButton(
                   onPressed: () {
+
+                    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return CompleteYourProfile();
+                        },
+                      ),
+                          (_) => false,
+                    );
                   },
                   child: Text(
                     "Continue to Complete your Profile",

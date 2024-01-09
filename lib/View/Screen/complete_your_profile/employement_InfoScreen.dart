@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/View/Screen/complete_your_profile/personal_informationScreen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Provider/userProvider.dart';
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 class EmploymentStatus {
@@ -39,6 +40,8 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
+    final userPersonalInfoProvider = Provider.of<UserPersonalInfoProvider>(context);
+
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
       backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
@@ -89,6 +92,9 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                         status.isSelected = true;
                         selectedStatusIndex = index;
                         isStatusSelected = true;
+
+                        userPersonalInfoProvider.updateSelectedEmploymentStatus(status.title);
+
                       });
                     },
                     child: Container(
@@ -141,6 +147,7 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                         controller: employerController,
                         onChanged: (value) {
                           setState(() {
+                            userPersonalInfoProvider.updateEmployerName(value);
                           });
                         },
                         decoration: InputDecoration(
@@ -181,19 +188,20 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                           filled: true,
                           fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         ),
-                    validator: (text) {
-                      if(text!.isEmpty){
-                        return 'enter employer name / company ';
-                      }
+                        validator: (text) {
+                          if(text!.isEmpty){
+                            return 'enter employer name / company ';
+                          }
 
-                      return null;
-                    },
+                          return null;
+                        },
                       ),
                       SizedBox(height: 15.h,),
                       TextFormField(
                         controller: jobController,
                         onChanged: (value) {
                           setState(() {
+                            userPersonalInfoProvider.updateJobTitle(value);
                           });
                         },
                         decoration: InputDecoration(
@@ -246,6 +254,7 @@ class _EmployementInfoScreenState extends State<EmployementInfoScreen> {
                         controller: industryController,
                         onChanged: (value) {
                           setState(() {
+                            userPersonalInfoProvider.updateOccupationIndustry(value);
                           });
                         },
                         decoration: InputDecoration(

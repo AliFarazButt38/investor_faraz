@@ -1,17 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:investor_flutter/View/Screen/bottom_navigation/bottom_navigation.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Auth/firebaseStorage.dart';
+import '../../../Auth/firestore_auth.dart';
+import '../../../Provider/userProvider.dart';
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 
 class EmploymentStatus {
   final String title;
-  bool isSelected;
 
-  EmploymentStatus({required this.title, this.isSelected = false});
+  EmploymentStatus({required this.title});
 }
 
 class UploadDocumentsScreen extends StatefulWidget {
@@ -22,22 +27,60 @@ class UploadDocumentsScreen extends StatefulWidget {
 }
 
 class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
+  int? selectedStatusIndex;
+  bool isFileUploaded = false;
+
+  bool areAllDocumentsUploaded() {
+    final userPersonalInfoProvider =
+    Provider.of<UserPersonalInfoProvider>(context, listen: false);
+    return userPersonalInfoProvider.uploadedFile != null &&
+        userPersonalInfoProvider.uploadedFile != null &&
+        userPersonalInfoProvider.uploadedFile != null;
+  }
+
+
+  Future<void> _pickFile() async {
+    final imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+
+      Provider.of<UserPersonalInfoProvider>(context, listen: false)
+          .updateUploadedFile(File(pickedFile.path));
+    }
+  }
+
+  Future<void> _uploadToFirestore() async {
+    final uploadedFile = Provider.of<UserPersonalInfoProvider>(context, listen: false).uploadedFile;
+
+    if (uploadedFile != null) {
+      final imageUrl = await uploadImageToFirestore(uploadedFile);
+      Provider.of<UserPersonalInfoProvider>(context, listen: false).updateImageUrl(imageUrl);
+
+
+    }
+  }
+
+
+
   List<EmploymentStatus> employmentStatusList = [
     EmploymentStatus(title: 'EIN Verification'),
     EmploymentStatus(title: 'Operating Agreement'),
     EmploymentStatus(title: 'Certificate of Formation'),
   ];
 
-  int selectedStatusIndex = -1;
+
 
   @override
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
+    final userPersonalInfoProvider = Provider.of<UserPersonalInfoProvider>(context, listen: false);
+
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
       backgroundColor:
-          isDarkMode ? Palette.darkBackground : Palette.baseBackground,
+      isDarkMode ? Palette.darkBackground : Palette.baseBackground,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(
@@ -79,7 +122,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                   fontSize: 30.sp,
                   fontWeight: FontWeight.w700,
                   color:
-                      isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
+                  isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
                 ),
               ),
               SizedBox(
@@ -102,15 +145,19 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                   shrinkWrap: true,
                   itemBuilder: (BuildContext context, int index) {
                     EmploymentStatus status = employmentStatusList[index];
+                    bool isSelected = index == selectedStatusIndex;
                     return GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         setState(() {
-                          if (selectedStatusIndex != -1) {
-                            employmentStatusList[selectedStatusIndex]
-                                .isSelected = false;
-                          }
-                          status.isSelected = true;
-                          selectedStatusIndex = index;
+                          selectedStatusIndex =  index;
+                        });
+
+
+                        await _pickFile();
+
+                        await _uploadToFirestore();
+                        setState(() {
+                          isFileUploaded = true;
                         });
                       },
                       child: Container(
@@ -119,11 +166,11 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: status.isSelected
+                            color: isSelected && isFileUploaded
                                 ? Palette.blue
                                 : (isDarkMode
-                                    ? Palette.hintText
-                                    : Palette.blueSides),
+                                ? Palette.hintText
+                                : Palette.blueSides),
                             width: 2.0,
                           ),
                           color: isDarkMode
@@ -140,21 +187,21 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: status.isSelected
+                                  color: isSelected && isFileUploaded
                                       ? Palette.blue
                                       : (isDarkMode
-                                          ? Palette.darkWhite
-                                          : Palette.baseElementDark),
+                                      ? Palette.darkWhite
+                                      : Palette.baseElementDark),
                                   width: 1.0,
                                 ),
                                 color: Colors.transparent,
                               ),
-                              child: status.isSelected
+                              child: isSelected && isFileUploaded
                                   ? Icon(
-                                      Icons.check,
-                                      color: Palette.blue,
-                                      size: 13.0,
-                                    )
+                                Icons.check,
+                                color: Palette.blue,
+                                size: 13.0,
+                              )
                                   : null,
                             ),
                             SizedBox(width: 10.0),
@@ -162,11 +209,11 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                               child: Text(
                                 status.title,
                                 style: TextStyle(
-                                  color: status.isSelected
+                                  color:isSelected && isFileUploaded
                                       ? Palette.blue
                                       : (isDarkMode
-                                          ? Palette.darkWhite
-                                          : Palette.baseElementDark),
+                                      ? Palette.darkWhite
+                                      : Palette.baseElementDark),
                                   fontSize: 17.sp,
                                 ),
                               ),
@@ -185,11 +232,62 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
               ),
               Center(
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NavigationBottom()));
+                  onTap: () async{
+                    if (areAllDocumentsUploaded()) {
+                      String? imageUrl = '';
+                      await saveEnterpriseDataToFirestore(
+                          userPersonalInfoProvider, imageUrl, userPersonalInfoProvider.capturedImage,userPersonalInfoProvider.imageUrl ?? []);
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => NavigationBottom()),
+                              (route) => false);
+                    }else{
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text(
+                              'Error',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.red,
+                              ),
+                            ),
+                            content: const Text(
+                              'Please upload all documents',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                            actions: <Widget>[
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue,
+                                ),
+                                child: const Text(
+                                  'OK',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.circular(16.0),
+                            ),
+                            backgroundColor: Colors.white,
+                            elevation: 4.0,
+                          );
+                        },
+                      );
+                    }
+
                   },
                   child: Container(
                     height: 56.h,

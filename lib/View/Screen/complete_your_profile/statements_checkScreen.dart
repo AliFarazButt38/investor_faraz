@@ -4,6 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:investor_flutter/View/Screen/complete_your_profile/upload_documentsScreen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Auth/firestore_auth.dart';
+import '../../../Provider/userProvider.dart';
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 class EmploymentStatus {
@@ -37,6 +39,7 @@ class _StatementCheckScreenState extends State<StatementCheckScreen> {
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
+    final userPersonalInfoProvider = Provider.of<UserPersonalInfoProvider>(context, listen: false);
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
       backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
@@ -51,9 +54,9 @@ class _StatementCheckScreenState extends State<StatementCheckScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
-                    onTap: (){
-                      Navigator.pop(context);
-                    },
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
                   child: Image.asset("assets/icons/back.png",height: 34.h,width: 34.w,),
                 ),
                 Padding(
@@ -94,6 +97,7 @@ class _StatementCheckScreenState extends State<StatementCheckScreen> {
                         status.isSelected = true;
                         selectedStatusIndex = index;
                         isStatusSelected = true;
+                        userPersonalInfoProvider.updateEmploymentStatement(status.title);
 
                       });
                     },
@@ -153,7 +157,7 @@ class _StatementCheckScreenState extends State<StatementCheckScreen> {
                 width: 304.w,
                 height: 56.h,
                 child: ElevatedButton(
-                  onPressed: (){
+                  onPressed: () async{
                     if (isStatusSelected) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => UploadDocumentsScreen()));
                     } else {

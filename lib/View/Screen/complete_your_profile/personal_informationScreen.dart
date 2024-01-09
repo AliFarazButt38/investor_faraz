@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:investor_flutter/View/Screen/complete_your_profile/fund_accountScreen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Provider/userProvider.dart';
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 class EmploymentStatus {
@@ -38,12 +40,15 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     EmploymentStatus(title: 'Divorced'),
 
   ];
-
+  DateTime? _selectedDate;
+  final DateFormat _dateFormat = DateFormat('MM/dd/yyyy');
   int selectedStatusIndex = -1;
   @override
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
+    final userPersonalInfoProvider = Provider.of<UserPersonalInfoProvider>(context);
+
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
 
@@ -84,82 +89,35 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Form(
                   key: _formKey,
                   child: Column(
-                children: [
-                  TextFormField(
-                    controller: dobController,
-                    onChanged: (value) {
-                      setState(() {
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Date of birth",
-                      labelStyle: TextStyle(
-                        color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
-                        fontSize: 17.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      hintText: "09/07/1995",
-                      hintStyle: TextStyle(
-                        color: isDarkMode ? Palette.hintText : Palette.baseGrey,
-                        fontSize: 17.sp,
-                        fontWeight: FontWeight.w400,
-
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
-                        ),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Palette.blue ,
-                        ),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Palette.red),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Palette.red),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      filled: true,
-                      fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
-                    ),
-                    validator: (text) {
-                      if(text!.isEmpty){
-                        return 'enter date of birth ';
-                      }
-
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 15.h,),
-                  Stack(
-                    children:[
+                    children: [
                       TextFormField(
-                        // Password TextField
-                        obscureText: !isSocialNumberVisible,  // Hides the entered text
-                        controller: socialController,
-                        onChanged: (value) {
-                          setState(() {
-                            // Reset the error state on change
-                          });
+                        controller: dobController,
+                        onTap: () async {
+                          final DateTime? selectedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1900), // Adjust the minimum date as needed
+                            lastDate: DateTime.now(),
+                          );
+
+                          if (selectedDate != null) {
+                            dobController.text = DateFormat('dd/MM/yyyy').format(selectedDate);
+                            userPersonalInfoProvider.updateDateOfBirth(dobController.text);
+                          }
                         },
                         decoration: InputDecoration(
-                          labelText: "Social number",
+                          labelText: "Date of birth",
                           labelStyle: TextStyle(
                             color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
-                            fontWeight: FontWeight.w400,
                             fontSize: 17.sp,
+                            fontWeight: FontWeight.w400,
                           ),
-                          hintText: "Social security number",
+                          hintText: "09/07/1995",
                           hintStyle: TextStyle(
                             color: isDarkMode ? Palette.hintText : Palette.baseGrey,
-                            fontWeight: FontWeight.w400,
                             fontSize: 17.sp,
+                            fontWeight: FontWeight.w400,
+
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -169,7 +127,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color:  Palette.blue , // Change border color if passwords don't match
+                              color: Palette.blue ,
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -185,109 +143,217 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                           fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
                         ),
                         validator: (text) {
-                          if(text!.isEmpty){
-                            return 'enter social number ';
+                          if (text!.isEmpty) {
+                            return 'Enter date of birth';
                           }
-
                           return null;
                         },
                       ),
-                      Positioned(
-                        right: 8.0,
-                        top: 20,
-                        child: GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              isSocialNumberVisible = !isSocialNumberVisible; // Toggle text visibility
-                            });
-                          },
-                          child: ImageIcon(
-                            AssetImage("assets/icons/hide.png"),
-                            size: 24.sp,
-                            color: isSocialNumberVisible ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.baseGrey),
+                      // TextFormField(
+                      //   controller: dobController,
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       userPersonalInfoProvider.updateDateOfBirth(value);
+                      //
+                      //     });
+                      //   },
+                      //   decoration: InputDecoration(
+                      //     labelText: "Date of birth",
+                      //     labelStyle: TextStyle(
+                      //       color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
+                      //       fontSize: 17.sp,
+                      //       fontWeight: FontWeight.w400,
+                      //     ),
+                      //     hintText: "09/07/1995",
+                      //     hintStyle: TextStyle(
+                      //       color: isDarkMode ? Palette.hintText : Palette.baseGrey,
+                      //       fontSize: 17.sp,
+                      //       fontWeight: FontWeight.w400,
+                      //
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(8.0),
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Palette.blue ,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(8.0),
+                      //     ),
+                      //     errorBorder: OutlineInputBorder(
+                      //       borderSide: const BorderSide(color: Palette.red),
+                      //       borderRadius: BorderRadius.circular(8.0),
+                      //     ),
+                      //     focusedErrorBorder: OutlineInputBorder(
+                      //       borderSide: const BorderSide(color: Palette.red),
+                      //       borderRadius: BorderRadius.circular(8.0),
+                      //     ),
+                      //     filled: true,
+                      //     fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
+                      //   ),
+                      //   validator: (text) {
+                      //     if(text!.isEmpty){
+                      //       return 'enter date of birth ';
+                      //     }
+                      //
+                      //     return null;
+                      //   },
+                      // ),
+                      SizedBox(height: 15.h,),
+                      Stack(
+                        children:[
+                          TextFormField(
+                            // Password TextField
+                            obscureText: !isSocialNumberVisible,
+                            controller: socialController,
+                            onChanged: (value) {
+                              setState(() {
+                                userPersonalInfoProvider.updateSocialSecurityNumber(value);
+                              });
+                            },
+                            decoration: InputDecoration(
+                              labelText: "Social number",
+                              labelStyle: TextStyle(
+                                color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 17.sp,
+                              ),
+                              hintText: "Social security number",
+                              hintStyle: TextStyle(
+                                color: isDarkMode ? Palette.hintText : Palette.baseGrey,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 17.sp,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color:  Palette.blue , // Change border color if passwords don't match
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Palette.red),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Palette.red),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              filled: true,
+                              fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
+                            ),
+                            validator: (text) {
+                              if(text!.isEmpty){
+                                return 'enter social number ';
+                              }
+
+                              return null;
+                            },
                           ),
-                        ),
+                          Positioned(
+                            right: 8.0,
+                            top: 20,
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  isSocialNumberVisible = !isSocialNumberVisible; // Toggle text visibility
+                                });
+                              },
+                              child: ImageIcon(
+                                AssetImage("assets/icons/hide.png"),
+                                size: 24.sp,
+                                color: isSocialNumberVisible ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.baseGrey),
+                              ),
+                            ),
+                          ),
+                        ],
+
+                      ),
+                      SizedBox(height: 15.h,),
+                      Stack(
+                        children:[
+                          TextFormField(
+                            // Password TextField
+                            obscureText: !isEnterAddressVisible, // Hides the entered text
+                            controller: addressController,
+                            onChanged: (value) {
+                              setState(() {
+                                userPersonalInfoProvider.updateAddress(value);
+                              });
+                            },
+                            decoration: InputDecoration(
+                              labelText: "Enter address",
+                              labelStyle: TextStyle(
+                                color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 17.sp,
+                              ),
+                              hintText: "Your permanent address",
+                              hintStyle: TextStyle(
+                                color: isDarkMode ? Palette.hintText : Palette.baseGrey,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 17.sp,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color:  Palette.blue , // Change border color if passwords don't match
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Palette.red),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Palette.red),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              filled: true,
+                              fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
+                            ),
+                            validator: (text) {
+                              if(text!.isEmpty){
+                                return 'enter address ';
+                              }
+
+                              return null;
+                            },
+                          ),
+                          Positioned(
+                            right: 8.0,
+                            top: 20,
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  isEnterAddressVisible = !isEnterAddressVisible;
+                                });
+                              },
+                              child: ImageIcon(
+                                AssetImage("assets/icons/hide.png"),
+                                size: 24.sp,
+                                color: isEnterAddressVisible ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.baseGrey),
+                              ),
+                            ),
+                          ),
+                        ],
+
                       ),
                     ],
-
-                  ),
-                  SizedBox(height: 15.h,),
-                  Stack(
-                    children:[
-                      TextFormField(
-                        // Password TextField
-                        obscureText: !isEnterAddressVisible, // Hides the entered text
-                        controller: addressController,
-                        onChanged: (value) {
-                          setState(() {
-                            // Reset the error state on change
-                          });
-                        },
-                        decoration: InputDecoration(
-                          labelText: "Enter address",
-                          labelStyle: TextStyle(
-                            color:isDarkMode ? Palette.darkWhite : Palette.baseElementDark,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 17.sp,
-                          ),
-                          hintText: "Your permanent address",
-                          hintStyle: TextStyle(
-                            color: isDarkMode ? Palette.hintText : Palette.baseGrey,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 17.sp,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: isDarkMode ? Palette.hintText :  Palette.blueSides, // Change border color if passwords don't match
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color:  Palette.blue , // Change border color if passwords don't match
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Palette.red),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Palette.red),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          filled: true,
-                          fillColor: isDarkMode? Palette.filledTextField : Palette.textFieldBlue,
-                        ),
-                        validator: (text) {
-                          if(text!.isEmpty){
-                            return 'enter address ';
-                          }
-
-                          return null;
-                        },
-                      ),
-                      Positioned(
-                        right: 8.0,
-                        top: 20,
-                        child: GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              isEnterAddressVisible = !isEnterAddressVisible; // Toggle text visibility
-                            });
-                          },
-                          child: ImageIcon(
-                            AssetImage("assets/icons/hide.png"),
-                            size: 24.sp,
-                            color: isEnterAddressVisible ? Palette.blue : (isDarkMode ? Palette.hintText : Palette.baseGrey),
-                          ),
-                        ),
-                      ),
-                    ],
-
-                  ),
-                ],
-              )),
+                  )),
               SizedBox(height: 15.h,),
               Text(
                 "What's your relationship\nstatus?",
@@ -313,6 +379,9 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                         status.isSelected = true;
                         selectedStatusIndex = index;
                         isStatusSelected = true;
+
+                        userPersonalInfoProvider.updateSelectedRelationshipStatus(status.title);
+
 
                       });
                     },
@@ -382,6 +451,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   ),
                 ),
               ),
+
               SizedBox(height: 30.h,)
             ],
           ),

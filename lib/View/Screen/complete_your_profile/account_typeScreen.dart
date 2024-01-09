@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:investor_flutter/Auth/firestore_auth.dart';
 import 'package:investor_flutter/View/Screen/complete_your_profile/employement_InfoScreen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Auth/auth_Service.dart';
+import '../../../Provider/userProvider.dart';
 import '../../../Theme/Palette/palette.dart';
 import '../../../Theme/theme_manager.dart';
 import 'enterprise_infoScreen.dart';
@@ -32,6 +35,8 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
     final isDarkMode = themeManager.themeMode == ThemeMode.dark;
+    final userPersonalInfoProvider = Provider.of<UserPersonalInfoProvider>(context);
+
     ScreenUtil.init(context, designSize: const Size(428, 926));
     return Scaffold(
       backgroundColor: isDarkMode ? Palette.darkBackground : Palette.baseBackground,
@@ -45,12 +50,12 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-              GestureDetector(
+                GestureDetector(
                   onTap: (){
                     Navigator.pop(context);
                   },
                   child: Image.asset("assets/icons/back.png",height: 34.h,width: 34.w,),
-              ),
+                ),
                 Padding(
                   padding:  EdgeInsets.only(right: 170.w),
                   child: SvgPicture.asset("assets/icons/investor.svg", width: 48.w, height: 39.h),
@@ -113,7 +118,7 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
                             ),
                           ),
                           if (status.isSelected)
-                          SvgPicture.asset("assets/icons/check.svg",height: 22.h,width: 22.w,),
+                            SvgPicture.asset("assets/icons/check.svg",height: 22.h,width: 22.w,),
                         ],
                       ),
                     ),
@@ -126,25 +131,27 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
                 width: 304.w,
                 height: 56.h,
                 child: ElevatedButton(
-                  onPressed: (){
+                  onPressed: () async{
                     EmploymentStatus selectedStatus =
                     employmentStatusList[selectedStatusIndex];
+                    userPersonalInfoProvider.updateSelectedAccountType(selectedStatus.title);
+
                     if (selectedStatus.title == 'Individual') {
-                    Navigator.push(
-                      context,
-                       MaterialPageRoute(
-                           builder: (context) =>EmployementInfoScreen(),
-                      ),
-                        );
-                          } else if (selectedStatus.title ==
-                    'Enterprise (Corporation or Trust)') {
-                    Navigator.push(
-                          context,
-                     MaterialPageRoute(
-                        builder: (context) => EnterPriseInfoScreen(),
-                     ),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>EmployementInfoScreen(),
+                        ),
                       );
-                      }
+                    } else if (selectedStatus.title ==
+                        'Enterprise (Corporation or Trust)') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EnterPriseInfoScreen(),
+                        ),
+                      );
+                    }
                   },
                   child: Text(
                     "Next",

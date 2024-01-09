@@ -69,7 +69,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue, // Customize the button color
+                    primary: Colors.blue,
                   ),
                   child: Text(
                     'OK',
@@ -210,12 +210,12 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                       TextField(
                         // Password TextField
                         obscureText:
-                            !isPasswordVisible, // Hides the entered text
+                            !isPasswordVisible,
                         controller: passwordController,
                         onChanged: (value) {
                           setState(() {
                             isPasswordMatch =
-                                true; // Reset the error state on change
+                                true;
                           });
                         },
                         decoration: InputDecoration(
@@ -240,14 +240,14 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                               color: isDarkMode
                                   ? Palette.hintText
                                   : Palette
-                                      .blueSides, // Change border color if passwords don't match
+                                      .blueSides,
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Palette
-                                  .blue, // Change border color if passwords don't match
+                                  .blue,
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -264,7 +264,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                           onTap: () {
                             setState(() {
                               isPasswordVisible =
-                                  !isPasswordVisible; // Toggle text visibility
+                                  !isPasswordVisible;
                             });
                           },
                           child: ImageIcon(
@@ -282,7 +282,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 16.h), // Add spacing
+              SizedBox(height: 16.h),
               Center(
                 child: Container(
                   height: 80.h,
@@ -290,14 +290,14 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                   child: Stack(
                     children: [
                       TextField(
-                        // Confirm Password TextField
+
                         obscureText:
-                            !isConfirmPasswordVisible, // Hides the entered text
+                            !isConfirmPasswordVisible,
                         controller: confirmPasswordController,
                         onChanged: (value) {
                           setState(() {
                             isPasswordMatch =
-                                true; // Reset the error state on change
+                                true;
                           });
                         },
                         decoration: InputDecoration(
@@ -322,7 +322,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                               color: isPasswordMatch
                                   ? Palette.blueSides
                                   : Palette
-                                      .red, // Change border color if passwords don't match
+                                      .red,
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -331,7 +331,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                               color: isPasswordMatch
                                   ? Palette.blue
                                   : Palette
-                                      .red, // Change border color if passwords don't match
+                                      .red,
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -348,7 +348,7 @@ class _ChoosePasswordScreenState extends State<ChoosePasswordScreen> {
                           onTap: () {
                             setState(() {
                               isConfirmPasswordVisible =
-                                  !isConfirmPasswordVisible; // Toggle text visibility
+                                  !isConfirmPasswordVisible;
                             });
                           },
                           child: ImageIcon(
